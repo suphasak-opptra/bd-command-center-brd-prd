@@ -279,7 +279,7 @@ summary:hover { color: var(--opptra-orange); }
       <tr><td><span class="req-id">BR-305</span></td><td>All analyses, decks, proposals, and documents created for a deal must be stored and linked to the deal record to prevent rework and knowledge loss</td><td><span class="pill pill-must">Must</span></td></tr>
       <tr><td><span class="req-id">BR-306</span></td><td>System must prevent duplicate deal creation by detecting brand-name and contact matches against existing records</td><td><span class="pill pill-should">Should</span></td></tr>
       <tr><td><span class="req-id">BR-307</span></td><td>Stakeholder notifications must trigger automatically on stage transitions, SLA warnings, red flags, and key deal milestones per the RACI matrix</td><td><span class="pill pill-must">Must</span></td></tr>
-      <tr><td><span class="req-id">BR-308</span></td><td>Deal-level data must sync bidirectionally with the Softlines Brands Database in Notion to ensure consistency and prevent data silos</td><td><span class="pill pill-must">Must</span></td></tr>
+      <tr><td><span class="req-id">BR-308</span></td><td>All pipeline data must reside in a single unified Notion database ("BD Pipeline Database") to eliminate cross-database sync complexity and ensure BD team can self-manage without technical support</td><td><span class="pill pill-must">Must</span></td></tr>
       <tr><td><span class="req-id">BR-309</span></td><td>System must support Google Sheets → Notion data migration for initial 100+ deal import with field mapping validation</td><td><span class="pill pill-must">Must</span></td></tr>
       <tr><td><span class="req-id">BR-310</span></td><td>All AI-generated actions (lead creation, field updates, notifications) must include a confidence score and be auditable</td><td><span class="pill pill-nice">Nice</span></td></tr>
     </tbody>
@@ -468,10 +468,7 @@ summary:hover { color: var(--opptra-orange); }
     </div>
     <div style="text-align:center; font-size:1.3rem; color:var(--opptra-orange); margin:0.5rem 0;">▼ ── Store ── ▼</div>
     <div class="arch-row">
-      <div class="arch-box" style="background:var(--opptra-yellow); border:2px solid var(--opptra-navy);">🎯 <strong>Deals DB</strong></div>
-      <div class="arch-box" style="background:var(--opptra-yellow); border:2px solid var(--opptra-navy);">🏢 <strong>Brands DB</strong></div>
-      <div class="arch-box" style="background:var(--opptra-yellow); border:2px solid var(--opptra-navy);">📋 <strong>Activity Log</strong></div>
-      <div class="arch-box" style="background:var(--opptra-yellow); border:2px solid var(--opptra-navy);">👤 <strong>Contacts</strong></div>
+      <div class="arch-box" style="background:var(--opptra-yellow); border:2px solid var(--opptra-navy); max-width:500px; flex:3;">📊 <strong>BD Pipeline Database</strong><br><span style="font-size:0.75rem;">Unified single-table · Brands + Deals + Contacts + Activity</span></div>
     </div>
     <div style="text-align:center; font-size:1.3rem; color:var(--opptra-orange); margin:0.5rem 0;">▼ ── Output ── ▼</div>
     <div class="arch-row">
@@ -484,91 +481,81 @@ summary:hover { color: var(--opptra-orange); }
 
 <!-- 2.4 NOTION DATABASE SCHEMA -->
 <div class="section" id="prd-schema">
-  <h2>2.4 &nbsp; Notion Database Schema</h2>
+  <h2>2.4 &nbsp; Notion Database Schema (Unified Single-Table)</h2>
 
-  <h3>Deals Database (Primary)</h3>
+  <div style="background:var(--opptra-yellow); border-left:4px solid var(--opptra-orange); padding:1rem 1.25rem; border-radius:0 8px 8px 0; margin-bottom:1.5rem;">
+    <strong style="color:var(--opptra-navy);">Architecture Decision:</strong> A single unified database replaces the original 4-database design (Deals DB, Brands DB, Activity Log, Contacts). This reduces complexity for non-technical BD team members, eliminates cross-database sync issues, and keeps all pipeline data in one view. Activity logs are captured as page content within each row. Brand contacts are stored as direct fields. Phase 2 enhancements (Weeks 3-4) will add dedicated Activity Log and Contacts databases once the team is comfortable with the system.
+  </div>
+
+  <h3>BD Pipeline Database &mdash; "Softline Brands Database (Lead to Active)"</h3>
   <table class="field-table">
     <thead><tr><th>Field Name</th><th>Type</th><th>Options / Formula</th><th>Required</th></tr></thead>
     <tbody>
-      <tr><td>Deal Name</td><td>Title</td><td>Format: "[Brand Name] — [Market/Region]"</td><td>Yes</td></tr>
-      <tr><td>Brand</td><td>Relation</td><td>→ Brands Database</td><td>Yes</td></tr>
-      <tr><td>Stage</td><td>Select</td><td>Connect | Lead | MQL | SQL | Opportunity | Signed | Launch | Rejected | On Hold</td><td>Yes</td></tr>
+      <tr><td colspan="4" style="background:var(--opptra-navy); color:white; font-weight:700;">Core Identity</td></tr>
+      <tr><td>Brand Name</td><td>Title</td><td>Official brand name (one row per brand-geo combination)</td><td>Yes</td></tr>
+      <tr><td>Key Geo</td><td>Select</td><td>India | SEA | GCC</td><td>Yes</td></tr>
+      <tr><td>Category</td><td>Select</td><td>Apparel | Footwear | Accessories | Beauty</td><td>Yes</td></tr>
+      <tr><td>Sub-Category</td><td>Text</td><td>Specific product niche (e.g., Watches, Luggage, Innerwear)</td><td>No</td></tr>
+      <tr><td>Quadrant</td><td>Select</td><td>1a | 1b | 2 | 3 | 4</td><td>No</td></tr>
+
+      <tr><td colspan="4" style="background:var(--opptra-navy); color:white; font-weight:700;">Pipeline Stage</td></tr>
+      <tr><td>Status</td><td>Select</td><td>Wishlist | Lead | MQL | SQL | Opportunity | Signed | Active | Hold | Rejected</td><td>Yes</td></tr>
       <tr><td>Stage Entry Date</td><td>Date</td><td>Auto-set on stage change</td><td>Auto</td></tr>
       <tr><td>Days in Stage</td><td>Formula</td><td><code>dateBetween(now(), prop("Stage Entry Date"), "days")</code></td><td>Auto</td></tr>
-      <tr><td>SLA Limit (days)</td><td>Formula</td><td>Lookup from stage: Connect=14, Lead=21, MQL=14, SQL=21, Opp=30, Signed=14</td><td>Auto</td></tr>
       <tr><td>SLA Status</td><td>Formula</td><td>if Days/SLA &lt; 0.75 → "On Track" | &lt; 1.0 → "Warning" | ≥ 1.0 → "Breached"</td><td>Auto</td></tr>
-      <tr><td>Primary Owner</td><td>Person</td><td>Single select from team members</td><td>Yes</td></tr>
-      <tr><td>Support Tags</td><td>Multi-select</td><td>Legal | Finance | Brand Team | Central | Marketing | Operations</td><td>No</td></tr>
-      <tr><td>Revenue Potential ($)</td><td>Number</td><td>Annual revenue estimate in USD</td><td>No (required at MQL+)</td></tr>
-      <tr><td>Revenue Confidence</td><td>Select</td><td>Low | Medium | High</td><td>No</td></tr>
-      <tr><td>Weighted Revenue</td><td>Formula</td><td>Revenue × stage probability (Connect=5%, Lead=10%, MQL=20%, SQL=40%, Opp=60%, Signed=90%, Launch=100%)</td><td>Auto</td></tr>
+      <tr><td>Signed Timeline</td><td>Select</td><td>Q4'25 | Q1'26 | Q2'26 | Q3'26 | Q4'26</td><td>No</td></tr>
+
+      <tr><td colspan="4" style="background:var(--opptra-navy); color:white; font-weight:700;">Ownership & Team</td></tr>
+      <tr><td>BD Owner</td><td>Person</td><td>Primary BD team member responsible</td><td>Yes</td></tr>
+      <tr><td>Brand Owner</td><td>Text</td><td>Brand-side contact name</td><td>No</td></tr>
+      <tr><td>Brand Contact</td><td>Text</td><td>Brand-side contact email / phone</td><td>No</td></tr>
+      <tr><td>Channel Lead</td><td>Person</td><td>Opptra channel lead assigned</td><td>No</td></tr>
+      <tr><td>Brand Vertical Lead</td><td>Person</td><td>Opptra vertical lead assigned</td><td>No</td></tr>
+      <tr><td>Consultant</td><td>Text</td><td>External consultant or agency involved</td><td>No</td></tr>
+
+      <tr><td colspan="4" style="background:var(--opptra-navy); color:white; font-weight:700;">Revenue & Financials</td></tr>
+      <tr><td>Existing Revenue (USD M)</td><td>Number</td><td>Current annual revenue in USD millions ($ format)</td><td>No</td></tr>
+      <tr><td>Y1 (USD M)</td><td>Number</td><td>Year 1 revenue projection in USD millions ($ format)</td><td>No</td></tr>
+      <tr><td>Y3 2028 (USD M)</td><td>Number</td><td>Year 3 (2028) revenue projection in USD millions ($ format)</td><td>No</td></tr>
+      <tr><td>Weighted Revenue</td><td>Formula</td><td>Y1 × stage probability (Wishlist=5%, Lead=10%, MQL=20%, SQL=40%, Opp=60%, Signed=90%, Active=100%)</td><td>Auto</td></tr>
+
+      <tr><td colspan="4" style="background:var(--opptra-navy); color:white; font-weight:700;">Markets & Channels</td></tr>
+      <tr><td>Markets</td><td>Multi-select</td><td>Target markets within the geo region</td><td>No</td></tr>
+      <tr><td>Platforms</td><td>Multi-select</td><td>E-commerce platforms (Shopee, Lazada, Amazon, Flipkart, Noon, etc.)</td><td>No</td></tr>
+      <tr><td>Country of Origin</td><td>Select</td><td>Brand's home country</td><td>No</td></tr>
+      <tr><td>Global Website</td><td>URL</td><td>Brand's official website</td><td>No</td></tr>
+
+      <tr><td colspan="4" style="background:var(--opptra-navy); color:white; font-weight:700;">Risk & Status Tracking</td></tr>
       <tr><td>Red Flags</td><td>Multi-select</td><td>Distributor Conflict | Low Margin | Financial Risk | Business Model | Regulatory | Other</td><td>No</td></tr>
       <tr><td>Rejection Reason</td><td>Select</td><td>No Response | Brand Declined | Distributor Conflict | Unacceptable Terms | Market Mismatch | Financial Red Flags | Internal Decision</td><td>If Rejected</td></tr>
-      <tr><td>On Hold Reason</td><td>Select</td><td>Brand Timing | Internal Capacity | Pending Legal | Market Conditions | Budget Cycle</td><td>If On Hold</td></tr>
-      <tr><td>Revival Date</td><td>Date</td><td>When to re-engage (mandatory for On Hold)</td><td>If On Hold</td></tr>
-      <tr><td>Last Activity Date</td><td>Date</td><td>Auto-updated on any activity</td><td>Auto</td></tr>
-      <tr><td>Next Action</td><td>Text</td><td>Free text: what needs to happen next</td><td>Yes</td></tr>
+      <tr><td>On Hold Reason</td><td>Select</td><td>Brand Timing | Internal Capacity | Pending Legal | Market Conditions | Budget Cycle</td><td>If Hold</td></tr>
+      <tr><td>Revival Date</td><td>Date</td><td>When to re-engage (mandatory for Hold)</td><td>If Hold</td></tr>
+      <tr><td>Source</td><td>Select</td><td>Inbound Email | Cold Outreach | Referral | Event | LinkedIn | Other</td><td>No</td></tr>
+
+      <tr><td colspan="4" style="background:var(--opptra-navy); color:white; font-weight:700;">Key Dates & Actions</td></tr>
+      <tr><td>Next Action</td><td>Text</td><td>What needs to happen next</td><td>Yes</td></tr>
       <tr><td>Next Action Due</td><td>Date</td><td>When the next action is due</td><td>Yes</td></tr>
-      <tr><td>Gmail Thread Links</td><td>URL</td><td>Multi-value: links to relevant email threads</td><td>No</td></tr>
-      <tr><td>Slack Thread Links</td><td>URL</td><td>Multi-value: links to relevant Slack threads</td><td>No</td></tr>
+      <tr><td>First Contact</td><td>Date</td><td>Date of first outreach or inbound contact</td><td>No</td></tr>
+      <tr><td>Pitch Date</td><td>Date</td><td>Date pitch deck was presented</td><td>No</td></tr>
+      <tr><td>MOU Signed</td><td>Date</td><td>Date MOU was executed</td><td>No</td></tr>
+      <tr><td>Contract Signed</td><td>Date</td><td>Date final contract was signed</td><td>No</td></tr>
+      <tr><td>Go Live</td><td>Date</td><td>Date brand went live on platform</td><td>No</td></tr>
+
+      <tr><td colspan="4" style="background:var(--opptra-navy); color:white; font-weight:700;">Brand Intelligence</td></tr>
+      <tr><td>Hero Items</td><td>Text</td><td>Key products / hero SKUs</td><td>No</td></tr>
+      <tr><td>Target Consumer</td><td>Text</td><td>Target demographic and consumer profile</td><td>No</td></tr>
+      <tr><td>Design Inspiration</td><td>Text</td><td>Brand design notes and positioning</td><td>No</td></tr>
       <tr><td>Documents</td><td>Files & Media</td><td>Analyses, decks, proposals, contracts</td><td>No</td></tr>
-      <tr><td>Activity Log</td><td>Relation</td><td>→ Activity Log Database</td><td>Auto</td></tr>
-      <tr><td>Notes</td><td>Text</td><td>Append-only chronological notes</td><td>No</td></tr>
-      <tr><td>Source</td><td>Select</td><td>Inbound Email | Cold Outreach | Referral | Event | LinkedIn | Other</td><td>Yes</td></tr>
+
+      <tr><td colspan="4" style="background:var(--opptra-navy); color:white; font-weight:700;">System Fields</td></tr>
       <tr><td>Created</td><td>Created time</td><td>Auto</td><td>Auto</td></tr>
       <tr><td>Last Edited</td><td>Last edited time</td><td>Auto</td><td>Auto</td></tr>
     </tbody>
   </table>
 
-  <h3 style="margin-top:2rem;">Brands Database</h3>
-  <table class="field-table">
-    <thead><tr><th>Field Name</th><th>Type</th><th>Description</th></tr></thead>
-    <tbody>
-      <tr><td>Brand Name</td><td>Title</td><td>Official brand name</td></tr>
-      <tr><td>Category</td><td>Select</td><td>Fashion | Beauty | Lifestyle | F&B | Tech Accessories | etc.</td></tr>
-      <tr><td>Sub-Category</td><td>Text</td><td>Specific product niche</td></tr>
-      <tr><td>Country of Origin</td><td>Select</td><td>Country list</td></tr>
-      <tr><td>Website</td><td>URL</td><td>Brand's official website</td></tr>
-      <tr><td>Key Contacts</td><td>Relation</td><td>→ Contacts Database</td></tr>
-      <tr><td>Annual Revenue (Est.)</td><td>Number</td><td>Brand's estimated global annual revenue</td></tr>
-      <tr><td>Current Distributors</td><td>Text</td><td>Known distributors in target market</td></tr>
-      <tr><td>Channel Presence</td><td>Multi-select</td><td>DTC | Wholesale | Marketplace | Retail | etc.</td></tr>
-      <tr><td>Brand Profile Doc</td><td>Files & Media</td><td>Attached brand analysis / scouting report</td></tr>
-      <tr><td>Deals</td><td>Relation</td><td>→ Deals Database (all deals for this brand)</td></tr>
-      <tr><td>Notes</td><td>Text</td><td>General brand intelligence</td></tr>
-    </tbody>
-  </table>
-
-  <h3 style="margin-top:2rem;">Activity Log Database</h3>
-  <table class="field-table">
-    <thead><tr><th>Field Name</th><th>Type</th><th>Description</th></tr></thead>
-    <tbody>
-      <tr><td>Activity ID</td><td>Title</td><td>Auto-generated: "ACT-[timestamp]"</td></tr>
-      <tr><td>Deal</td><td>Relation</td><td>→ Deals Database</td></tr>
-      <tr><td>Activity Type</td><td>Select</td><td>Stage Change | Note Added | Email Linked | Slack Captured | Call Log | Document Added | Owner Change | SLA Alert | Red Flag | System Auto</td></tr>
-      <tr><td>Actor</td><td>Person</td><td>Who performed the action (or "System" for automations)</td></tr>
-      <tr><td>Timestamp</td><td>Date</td><td>When the activity occurred</td></tr>
-      <tr><td>Details</td><td>Text</td><td>Description of what happened</td></tr>
-      <tr><td>Previous Value</td><td>Text</td><td>For stage changes: the previous stage</td></tr>
-      <tr><td>New Value</td><td>Text</td><td>For stage changes: the new stage</td></tr>
-      <tr><td>Attachments</td><td>Files & Media</td><td>Related documents if any</td></tr>
-    </tbody>
-  </table>
-
-  <h3 style="margin-top:2rem;">Contacts Database</h3>
-  <table class="field-table">
-    <thead><tr><th>Field Name</th><th>Type</th><th>Description</th></tr></thead>
-    <tbody>
-      <tr><td>Name</td><td>Title</td><td>Full name</td></tr>
-      <tr><td>Company/Brand</td><td>Relation</td><td>→ Brands Database</td></tr>
-      <tr><td>Role/Title</td><td>Text</td><td>Job title</td></tr>
-      <tr><td>Email</td><td>Email</td><td>Primary email</td></tr>
-      <tr><td>Phone</td><td>Phone</td><td>Primary phone</td></tr>
-      <tr><td>LinkedIn</td><td>URL</td><td>LinkedIn profile</td></tr>
-      <tr><td>Relationship Status</td><td>Select</td><td>New | Warm | Close | Champion | Inactive</td></tr>
-      <tr><td>Notes</td><td>Text</td><td>Relationship notes, preferences</td></tr>
-    </tbody>
-  </table>
+  <div style="background:#e8f5e9; border-left:4px solid #2e7d32; padding:0.75rem 1rem; border-radius:0 8px 8px 0; margin-top:1rem;">
+    <strong>Activity Logs:</strong> Stored as page content (comments / sub-blocks) within each brand row. Each entry records: date, activity type, actor, and details. This keeps context co-located with the brand and avoids the need for a separate database.
+  </div>
 </div>
 
 <!-- 2.5 WORKFLOW SPECIFICATIONS -->
@@ -913,13 +900,7 @@ summary:hover { color: var(--opptra-orange); }
         <td>Day 2 of implementation</td>
         <td>GSheets columns → Notion fields (mapping document required)</td>
       </tr>
-      <tr>
-        <td><strong>Deals DB ↔ Brands DB</strong></td>
-        <td>Bidirectional (Notion internal)</td>
-        <td>Notion Relations + Rollups</td>
-        <td>Real-time (native Notion)</td>
-        <td>Deal.Brand → Brands DB; Brands.Deals rollup for all associated deals</td>
-      </tr>
+      <!-- Removed: Deals DB ↔ Brands DB row — no longer needed with unified single-table architecture -->
     </tbody>
   </table>
 </div>
@@ -991,6 +972,57 @@ summary:hover { color: var(--opptra-orange); }
     <tr><td>Core Notion views functional</td><td>Pipeline Board, My Deals, SLA Watchlist live</td></tr>
     <tr><td>No critical bugs</td><td>0 P0 bugs outstanding</td></tr>
   </table>
+</div>
+
+<!-- 2.13 PHASE 2 ENHANCEMENTS -->
+<div class="section" id="prd-phase2">
+  <h2>2.13 &nbsp; Phase 2 Enhancements (Weeks 3–4)</h2>
+  <p>Once the BD team is comfortable managing the unified single-table pipeline, the following enhancements can be layered in to add depth without disrupting daily workflows.</p>
+
+  <table class="field-table">
+    <thead><tr><th style="width:220px;">Enhancement</th><th>Description</th><th style="width:120px;">Priority</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>Activity Log Database</strong></td>
+        <td>Dedicated database to capture structured activity history (stage changes, emails linked, calls, notes). Linked to BD Pipeline via Relation. Enables timeline views and audit trails per brand.</td>
+        <td><span class="pill pill-should">Should</span></td>
+      </tr>
+      <tr>
+        <td><strong>Contacts Database</strong></td>
+        <td>Separate database for brand-side and consultant contacts. Fields: Name, Company, Role, Email, Phone, LinkedIn, Relationship Status. Linked to BD Pipeline via Relation for multi-contact support.</td>
+        <td><span class="pill pill-should">Should</span></td>
+      </tr>
+      <tr>
+        <td><strong>Documents Knowledge Base</strong></td>
+        <td>Centralized Notion database for all brand analyses, pitch decks, MOUs, and contracts. Tagged by brand, document type, and stage. Enables search and prevents rework across deals.</td>
+        <td><span class="pill pill-nice">Nice</span></td>
+      </tr>
+      <tr>
+        <td><strong>Advanced Claude Automations</strong></td>
+        <td>AI-powered workflows: auto-stage progression suggestions, SLA breach alerts, weekly pipeline digest generation, duplicate detection, and revenue confidence scoring.</td>
+        <td><span class="pill pill-should">Should</span></td>
+      </tr>
+      <tr>
+        <td><strong>Dashboard Views</strong></td>
+        <td>Pre-built Notion views: Pipeline Board (Kanban by Status), My Deals (filtered by BD Owner), SLA Watchlist (Breached + Warning), Revenue Forecast (grouped by Signed Timeline), and Geo Heatmap.</td>
+        <td><span class="pill pill-must">Must</span></td>
+      </tr>
+      <tr>
+        <td><strong>Slack Integration</strong></td>
+        <td>Slack bot that captures deal-related messages from BD channels and appends them as activity entries. Supports <code>/deal [brand]</code> quick-lookup command.</td>
+        <td><span class="pill pill-nice">Nice</span></td>
+      </tr>
+      <tr>
+        <td><strong>Gmail Integration</strong></td>
+        <td>Auto-detect brand-related email threads and link them to pipeline rows. Weekly email digest of pipeline status sent to BD leads and leadership.</td>
+        <td><span class="pill pill-nice">Nice</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div style="background:var(--opptra-yellow); border-left:4px solid var(--opptra-orange); padding:0.75rem 1rem; border-radius:0 8px 8px 0; margin-top:1rem;">
+    <strong style="color:var(--opptra-navy);">Migration Path:</strong> Phase 2 databases (Activity Log, Contacts) will be added alongside the existing BD Pipeline Database — not replacing it. Existing page-content activity logs and inline contact fields will be migrated to the new databases via Claude automation scripts, ensuring zero data loss and no disruption to the BD team's daily workflow.
+  </div>
 </div>
 
 <!-- APPENDIX -->
