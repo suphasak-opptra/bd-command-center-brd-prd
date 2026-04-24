@@ -1,1084 +1,877 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Opptra BD Command Center — BRD & PRD</title>
-<link href="https://fonts.googleapis.com/css2?family=Spectral:wght@300;600;700&family=Raleway:wght@400;500;600&display=swap" rel="stylesheet">
-<style>
-:root {
-  --opptra-navy: #131A48;
-  --opptra-orange: #FF5800;
-  --opptra-orange-hover: #FF8C4F;
-  --opptra-yellow: #FFFCE8;
-  --opptra-grey: #5A5A5A;
-  --opptra-grey-light: #CECECE;
-  --opptra-white: #FFFFFF;
-  --opptra-black: #000000;
-  --font-heading: 'Spectral', Georgia, serif;
-  --font-body: 'Raleway', 'Segoe UI', sans-serif;
-}
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: var(--font-body); color: var(--opptra-grey); line-height: 1.7; background: #f8f9fa; }
-h1, h2, h3, h4 { font-family: var(--font-heading); color: var(--opptra-navy); }
-h1 { font-weight: 300; font-size: 2.4rem; letter-spacing: -0.04em; }
-h2 { font-weight: 700; font-size: 1.5rem; margin-bottom: 0.8rem; padding-bottom: 0.4rem; border-bottom: 3px solid var(--opptra-orange); display: inline-block; }
-h3 { font-weight: 600; font-size: 1.15rem; margin-bottom: 0.5rem; }
-h4 { font-weight: 600; font-size: 1rem; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Opptra BD Command Center — BRD & PRD v1.2</title>
+    <style>
+        :root {
+            --navy: #131A48;
+            --orange: #FF5800;
+            --yellow: #FFFCE8;
+            --light-gray: #F5F5F5;
+            --text-dark: #333;
+            --text-light: #666;
+        }
 
-.header { background: var(--opptra-navy); color: white; padding: 2rem 3rem; display: flex; align-items: center; justify-content: space-between; }
-.header img { height: 40px; }
-.header .doc-meta { text-align: right; font-size: 0.85rem; opacity: 0.8; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-.container { max-width: 1100px; margin: 0 auto; padding: 2rem 3rem; }
+        html {
+            color-scheme: light;
+        }
 
-.toc { background: white; border-radius: 8px; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
-.toc a { color: var(--opptra-navy); text-decoration: none; display: block; padding: 0.3rem 0; border-bottom: 1px solid #f0f0f0; transition: color 0.2s; font-size: 0.92rem; }
-.toc a:hover { color: var(--opptra-orange); }
-.toc-num { color: var(--opptra-orange); font-weight: 600; margin-right: 0.5rem; display: inline-block; width: 50px; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background: #fff;
+        }
 
-.section { background: white; border-radius: 8px; padding: 2.5rem; margin-bottom: 2rem; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
-.part-divider { background: var(--opptra-navy); color: white; text-align: center; padding: 2rem; border-radius: 8px; margin: 2.5rem 0 2rem; }
-.part-divider h1 { color: white; }
-.part-divider p { color: rgba(255,255,255,0.7); margin-top: 0.5rem; }
+        .header {
+            background: var(--navy);
+            color: white;
+            padding: 3rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
 
-.callout { background: var(--opptra-yellow); border-left: 4px solid var(--opptra-orange); padding: 1rem 1.2rem; border-radius: 0 8px 8px 0; margin: 1rem 0; font-size: 0.92rem; }
+        .header-left h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
 
-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.88rem; }
-th { background: var(--opptra-navy); color: white; padding: 0.6rem 0.8rem; text-align: left; font-weight: 500; }
-td { padding: 0.55rem 0.8rem; border-bottom: 1px solid #eee; vertical-align: top; }
-tr:hover td { background: #fafafa; }
+        .header-left p {
+            font-size: 1.1rem;
+            color: rgba(255,255,255,0.9);
+        }
 
-.pill { display: inline-block; padding: 0.15rem 0.55rem; border-radius: 99px; font-size: 0.72rem; font-weight: 600; }
-.pill-must { background: #c62828; color: white; }
-.pill-should { background: var(--opptra-orange); color: white; }
-.pill-nice { background: #1565c0; color: white; }
-.pill-p0 { background: #c62828; color: white; }
-.pill-p1 { background: var(--opptra-orange); color: white; }
-.pill-p2 { background: #1565c0; color: white; }
+        .header-right {
+            text-align: right;
+            font-size: 0.95rem;
+        }
 
-.req-id { font-family: monospace; font-weight: 700; color: var(--opptra-orange); font-size: 0.85rem; }
+        .header-right p {
+            margin-bottom: 0.3rem;
+        }
 
-/* Flow diagrams */
-.flow { display: flex; align-items: center; gap: 0.3rem; flex-wrap: wrap; margin: 1rem 0; }
-.flow-box { padding: 0.6rem 1rem; border-radius: 6px; font-size: 0.8rem; font-weight: 600; text-align: center; min-width: 100px; }
-.flow-diamond { padding: 0.6rem; font-size: 0.75rem; font-weight: 600; text-align: center; transform: rotate(0deg); border: 2px solid var(--opptra-orange); border-radius: 4px; background: var(--opptra-yellow); min-width: 80px; }
-.flow-arrow { font-size: 1.2rem; color: var(--opptra-navy); }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
 
-/* Architecture */
-.arch-row { display: flex; gap: 0.8rem; margin: 0.8rem 0; justify-content: center; flex-wrap: wrap; }
-.arch-box { padding: 0.8rem; border-radius: 6px; text-align: center; font-size: 0.82rem; min-width: 120px; flex: 1; max-width: 180px; }
+        section {
+            margin-bottom: 3rem;
+        }
 
-details { margin: 0.5rem 0; }
-summary { cursor: pointer; font-weight: 600; color: var(--opptra-navy); padding: 0.4rem 0; font-size: 0.95rem; }
-summary:hover { color: var(--opptra-orange); }
+        h2 {
+            color: var(--navy);
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid var(--orange);
+            display: inline-block;
+        }
 
-.user-story { background: #f9f9fb; border-left: 3px solid var(--opptra-navy); padding: 0.8rem 1rem; margin: 0.6rem 0; border-radius: 0 6px 6px 0; font-size: 0.9rem; }
-.user-story strong { color: var(--opptra-orange); }
+        h3 {
+            color: var(--navy);
+            font-size: 1.3rem;
+            margin-top: 1.5rem;
+            margin-bottom: 0.8rem;
+        }
 
-.auto-card { border: 1px solid #eee; border-radius: 8px; padding: 1.2rem; margin: 1rem 0; border-left: 4px solid var(--opptra-orange); }
-.auto-card h4 { display: flex; justify-content: space-between; align-items: center; }
+        h4 {
+            color: var(--text-dark);
+            font-size: 1.1rem;
+            margin-top: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
 
-.field-table td:first-child { font-family: monospace; font-weight: 600; color: var(--opptra-navy); font-size: 0.85rem; white-space: nowrap; }
+        h5 {
+            color: var(--navy);
+            font-size: 1rem;
+            margin-top: 1rem;
+            margin-bottom: 0.4rem;
+        }
 
-@media print {
-  body { background: white; }
-  .section { box-shadow: none; border: 1px solid #eee; page-break-inside: avoid; }
-  .header, th, .pill-must, .pill-should, .pill-nice { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
-}
-@page { margin: 1.5cm; }
-</style>
+        .table-wrapper {
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        thead tr {
+            background: var(--navy);
+            color: white;
+        }
+
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        tbody tr:hover {
+            background: var(--light-gray);
+        }
+
+        .callout {
+            background: var(--yellow);
+            border-left: 4px solid var(--orange);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 4px;
+        }
+
+        .callout strong {
+            color: var(--navy);
+        }
+
+        ul, ol {
+            margin-left: 2rem;
+            margin-top: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        li {
+            margin-bottom: 0.4rem;
+        }
+
+        .emphasis {
+            background: var(--light-gray);
+            padding: 1rem;
+            border-radius: 4px;
+            margin: 1rem 0;
+        }
+
+        .schema-section {
+            background: var(--light-gray);
+            padding: 1.5rem;
+            border-radius: 4px;
+            margin: 1.5rem 0;
+        }
+
+        .toc {
+            background: var(--light-gray);
+            padding: 1.5rem;
+            border-radius: 4px;
+            margin: 2rem 0;
+        }
+
+        .toc ul {
+            list-style: none;
+            margin-left: 0;
+        }
+
+        .toc li {
+            margin-bottom: 0.3rem;
+        }
+
+        .toc a {
+            color: var(--orange);
+            text-decoration: none;
+        }
+
+        .toc a:hover {
+            text-decoration: underline;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-light);
+            border-top: 1px solid #ddd;
+            margin-top: 4rem;
+        }
+
+        pre {
+            background: var(--light-gray);
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+    </style>
 </head>
 <body>
 
-<!-- HEADER -->
 <div class="header">
-  <div>
-    <img src="https://cdn.prod.website-files.com/67a44396c211269f785f9dfe/67a4a8650573be9ae072ae9e_Opptra-logo.svg" alt="Opptra">
-    <div style="margin-top:0.5rem; font-family:var(--font-heading); font-size:1.3rem; font-weight:300;">BD Command Center</div>
-    <div style="font-size:0.9rem; opacity:0.7;">Business & Product Requirements Document</div>
-  </div>
-  <div class="doc-meta">
-    <div><strong>Classification:</strong> Internal — Confidential</div>
-    <div><strong>Version:</strong> 1.0</div>
-    <div><strong>Date:</strong> April 17, 2026</div>
-    <div><strong>Status:</strong> Draft — Pending Review</div>
-  </div>
+    <div class="header-left">
+        <div style="font-size: 1.5rem; font-weight: 700; color: var(--orange); margin-bottom: 0.5rem;">opptra</div>
+        <h1>BD Command Center</h1>
+        <p>Business & Product Requirements Document</p>
+    </div>
+    <div class="header-right">
+        <p><strong>Classification:</strong> Internal — Confidential</p>
+        <p><strong>Version:</strong> 1.1</p>
+        <p><strong>Date:</strong> April 17, 2026 (Updated April 21, 2026)</p>
+        <p><strong>Status:</strong> Revised — Unified Architecture + Event Triggers + HITL Automations</p>
+    </div>
 </div>
 
 <div class="container">
 
-<!-- DOCUMENT CONTROL -->
-<div class="section">
-  <h2>Document Control</h2>
-  <table>
-    <tr><th style="width:160px;">Field</th><th>Details</th></tr>
-    <tr><td><strong>Document Title</strong></td><td>Opptra BD Command Center — Business & Product Requirements Document</td></tr>
-    <tr><td><strong>Version</strong></td><td>1.0</td></tr>
-    <tr><td><strong>Date</strong></td><td>April 17, 2026</td></tr>
-    <tr><td><strong>Author</strong></td><td>Suphasak / Opptra BD Strategy</td></tr>
-    <tr><td><strong>Reviewers</strong></td><td>BD Team Lead, Brand Team Lead, Central Operations</td></tr>
-    <tr><td><strong>Approval</strong></td><td>Pending</td></tr>
-  </table>
-  <table style="margin-top:1rem;">
-    <thead><tr><th>Version</th><th>Date</th><th>Author</th><th>Changes</th></tr></thead>
-    <tbody>
-      <tr><td>0.1</td><td>Apr 17, 2026</td><td>Suphasak</td><td>Initial draft</td></tr>
-      <tr><td>1.0</td><td>Apr 17, 2026</td><td>Suphasak</td><td>Complete BRD + PRD for team review</td></tr>
-    </tbody>
-  </table>
-</div>
+<section>
+    <h2>Update Summary</h2>
+    <p style="margin-top: 1rem;">Version 1.1 simplified the architecture from 4 databases to a single unified "BD Pipeline" database. <strong>Version 1.2 (April 24, 2026)</strong> adds event-driven stage triggers, GCal brand meeting detection automation, human-in-the-loop (HITL) approval workflow, and a revised automation architecture. All automations post to Slack for human review before updating Notion.</p>
+</section>
 
-<!-- TOC -->
-<div class="toc">
-  <h2>Table of Contents</h2>
-  <div style="columns:2; column-gap:2rem; margin-top:1rem;">
-    <div style="font-weight:700; color:var(--opptra-navy); margin-bottom:0.3rem;">Part 1: Business Requirements</div>
-    <a href="#brd-exec"><span class="toc-num">1.1</span> Executive Summary</a>
-    <a href="#brd-obj"><span class="toc-num">1.2</span> Business Objectives</a>
-    <a href="#brd-stake"><span class="toc-num">1.3</span> Stakeholder Analysis</a>
-    <a href="#brd-req"><span class="toc-num">1.4</span> Business Requirements</a>
-    <a href="#brd-rules"><span class="toc-num">1.5</span> Business Rules</a>
-    <a href="#brd-cons"><span class="toc-num">1.6</span> Constraints & Assumptions</a>
-    <a href="#brd-accept"><span class="toc-num">1.7</span> Acceptance Criteria</a>
-    <div style="font-weight:700; color:var(--opptra-navy); margin:0.5rem 0 0.3rem;">Part 2: Product Requirements</div>
-    <a href="#prd-over"><span class="toc-num">2.1</span> Product Overview & Personas</a>
-    <a href="#prd-stories"><span class="toc-num">2.2</span> User Stories</a>
-    <a href="#prd-arch"><span class="toc-num">2.3</span> System Architecture</a>
-    <a href="#prd-schema"><span class="toc-num">2.4</span> Notion Database Schema</a>
-    <a href="#prd-workflows"><span class="toc-num">2.5</span> Workflow Specifications</a>
-    <a href="#prd-auto"><span class="toc-num">2.6</span> Claude AI Automations</a>
-    <a href="#prd-notify"><span class="toc-num">2.7</span> Notification Matrix</a>
-    <a href="#prd-dash"><span class="toc-num">2.8</span> Dashboard & Reporting</a>
-    <a href="#prd-integ"><span class="toc-num">2.9</span> Integration Specs</a>
-    <a href="#prd-security"><span class="toc-num">2.10</span> Security & Access Control</a>
-    <a href="#prd-nfr"><span class="toc-num">2.11</span> Non-Functional Requirements</a>
-    <a href="#prd-test"><span class="toc-num">2.12</span> Testing & Validation</a>
-    <a href="#appendix"><span class="toc-num">App.</span> Glossary & Reference Cards</a>
-  </div>
-</div>
+<section id="prd-arch">
+    <h2>2.3 System Architecture (Updated)</h2>
 
-<!-- ============================================================ -->
-<!-- PART 1: BUSINESS REQUIREMENTS DOCUMENT -->
-<!-- ============================================================ -->
-<div class="part-divider">
-  <h1>Part 1</h1>
-  <div style="font-family:var(--font-heading); font-size:1.5rem; font-weight:300;">Business Requirements Document (BRD)</div>
-  <p>What the business needs and why</p>
-</div>
+    <h4>Data Flow Diagram (Updated v1.2 — with HITL)</h4>
+    <pre>📧 Gmail          📅 Google Calendar          💬 Slack          ✋ Manual
+Brand emails      Brand meetings detected     BD messages       Call notes
+     ▼                    ▼                        ▼                 ▼
+     └────────────────────────────────────────────────────────────────┘
+                              ── Detect ──
 
-<!-- 1.1 EXECUTIVE SUMMARY -->
-<div class="section" id="brd-exec">
-  <h2>1.1 &nbsp; Executive Summary</h2>
+🧠 Claude AI Orchestrator (Scheduled Tasks)
+Scan → Match against Notion pipeline → Classify event type
 
-  <h3 style="margin-top:1rem;">Problem Statement</h3>
-  <p>Opptra's BD team of 3 manages 100+ active leads across disconnected systems (Notion, Gmail, Slack, Google Sheets). There are no standardized stage definitions, no SLA tracking, no formal ownership model, and no automation. Verbal commitments are lost, rejected deals disappear, stakeholders are misaligned, and the team spends disproportionate time on admin rather than deal-making. The system is at breaking point.</p>
+                              ── Notify ──
 
-  <h3 style="margin-top:1rem;">Proposed Solution</h3>
-  <p>Build the <strong>Opptra BD Command Center</strong> — a Notion-native CRM orchestrated by Claude AI with Gmail and Slack integrations. The system standardizes the deal pipeline (7 stages + Rejected/On Hold), enforces SLAs, assigns clear ownership via RACI, automates lead capture/notifications/escalations, and provides real-time pipeline visibility to all stakeholders.</p>
+💬 Slack #ai-softlines / #softlines-bd-pipeline
+Post detection with brand match, proposed action, context
 
-  <h3 style="margin-top:1rem;">Expected Outcomes</h3>
-  <p>Near-zero lead leakage, 90%+ reduction in manual data entry, real-time stage visibility, automated stakeholder notifications, AI-powered revenue forecasting and red flag detection, and a scalable foundation that grows with the team.</p>
+                           ── Human Review ──
 
-  <h3 style="margin-top:1rem;">Success Criteria</h3>
-  <table>
-    <tr><th>Criterion</th><th>Target</th><th>Measured By</th></tr>
-    <tr><td>Lead leakage rate</td><td>&lt;3%</td><td>Monthly pipeline audit</td></tr>
-    <tr><td>SLA compliance</td><td>&gt;90%</td><td>Automated SLA dashboard</td></tr>
-    <tr><td>Manual data entry time</td><td>&lt;30 min/week per person</td><td>Team self-report + activity log</td></tr>
-    <tr><td>Stage transition audit trail</td><td>100% coverage</td><td>Activity log completeness check</td></tr>
-    <tr><td>Team adoption</td><td>100% deals in Notion by Day 7</td><td>Database record count vs. known deals</td></tr>
-  </table>
-</div>
+👤 BD Team / Suphasak
+Review → ✅ Approve or ❌ Reject via Slack reaction
 
-<!-- 1.2 BUSINESS OBJECTIVES -->
-<div class="section" id="brd-obj">
-  <h2>1.2 &nbsp; Business Objectives</h2>
-  <table>
-    <thead><tr><th style="width:70px;">ID</th><th>Objective</th><th>Metric</th><th>Target</th></tr></thead>
-    <tbody>
-      <tr><td><span class="req-id">OBJ-1</span></td><td>Eliminate lead leakage by ensuring every lead is captured, tracked, and actioned within SLAs</td><td>Lead leakage rate</td><td>&lt;3% (from ~15-20%)</td></tr>
-      <tr><td><span class="req-id">OBJ-2</span></td><td>Reduce average deal cycle time by removing bottlenecks and enforcing stage SLAs</td><td>Avg. days Connect → Signed</td><td>Reduce by 20-30%</td></tr>
-      <tr><td><span class="req-id">OBJ-3</span></td><td>Achieve 100% visibility on stage transitions across all stakeholders</td><td>Audit trail completeness</td><td>100%</td></tr>
-      <tr><td><span class="req-id">OBJ-4</span></td><td>Reduce manual data entry and admin work by 90%</td><td>Hours/week on CRM admin</td><td>&lt;30 min/person/week</td></tr>
-      <tr><td><span class="req-id">OBJ-5</span></td><td>Enable data-driven pipeline forecasting for leadership decision-making</td><td>Revenue forecast availability</td><td>Weekly, automated</td></tr>
-      <tr><td><span class="req-id">OBJ-6</span></td><td>Ensure all verbal commitments and deal-related communications are captured digitally</td><td>Commitment capture rate</td><td>&gt;90%</td></tr>
-      <tr><td><span class="req-id">OBJ-7</span></td><td>Track and manage rejected/on-hold deals for potential revival</td><td>Rejected deals with reason codes</td><td>100%</td></tr>
-    </tbody>
-  </table>
-</div>
+                              ── Update ──
 
-<!-- 1.3 STAKEHOLDER ANALYSIS -->
-<div class="section" id="brd-stake">
-  <h2>1.3 &nbsp; Stakeholder Analysis</h2>
-  <table>
-    <thead><tr><th>Stakeholder</th><th>Role in System</th><th>Interest Level</th><th>Key Needs</th></tr></thead>
-    <tbody>
-      <tr><td><strong>BD Team (3 members)</strong></td><td>Primary users + CRM custodians</td><td>High — daily users</td><td>Reduced admin burden, clear ownership, automated follow-ups</td></tr>
-      <tr><td><strong>Brand Team</strong></td><td>Co-owners from Signed stage onward</td><td>High — post-SQL</td><td>Timely handoff, complete deal context, no re-work</td></tr>
-      <tr><td><strong>Central/Support Team</strong></td><td>Dependencies for research, legal, finance</td><td>Medium</td><td>Clear requests, reasonable timelines, status visibility</td></tr>
-      <tr><td><strong>Leadership/CEO</strong></td><td>Pipeline oversight + deal approvals</td><td>High — strategic</td><td>Revenue forecast, pipeline health, escalation on big deals</td></tr>
-    </tbody>
-  </table>
+📊 BD Pipeline (Unified Database)  ←── Only on human approval
+Stage change, Stage Entry Date reset, activity logged
 
-  <h3 style="margin-top:1.5rem;">Communication Plan</h3>
-  <table>
-    <thead><tr><th>Stakeholder</th><th>Update Type</th><th>Frequency</th><th>Channel</th></tr></thead>
-    <tbody>
-      <tr><td>BD Team</td><td>Deal-level notifications, SLA alerts</td><td>Real-time</td><td>Slack DM + Notion</td></tr>
-      <tr><td>Brand Team</td><td>Stage transitions relevant to them (MQL+)</td><td>Per event</td><td>Slack #bd-pipeline</td></tr>
-      <tr><td>Central Team</td><td>Support requests, dependency notifications</td><td>Per event</td><td>Slack DM</td></tr>
-      <tr><td>Leadership</td><td>Pipeline digest, big deal alerts</td><td>Weekly + critical events</td><td>Email digest + Slack</td></tr>
-    </tbody>
-  </table>
-</div>
+                              ── Output ──
 
-<!-- 1.4 BUSINESS REQUIREMENTS -->
-<div class="section" id="brd-req">
-  <h2>1.4 &nbsp; Business Requirements</h2>
+🔔 Notifications              📊 Dashboards              📈 Reports
+Slack + Email                Notion views               Weekly digest
+    </pre>
 
-  <h3 style="margin-top:1rem;">Process Requirements (BR-100)</h3>
-  <table>
-    <thead><tr><th style="width:70px;">ID</th><th>Requirement</th><th style="width:80px;">Priority</th></tr></thead>
-    <tbody>
-      <tr><td><span class="req-id">BR-101</span></td><td>System must enforce standardized stage definitions (Connect, Lead, MQL, SQL, Opportunity, Signed, Launch, Rejected, On Hold) with clear entry and exit criteria agreed across all teams</td><td><span class="pill pill-must">Must</span></td></tr>
-      <tr><td><span class="req-id">BR-102</span></td><td>Every stage transition must be logged with timestamp, actor (who made the change), and reason/notes for the transition</td><td><span class="pill pill-must">Must</span></td></tr>
-      <tr><td><span class="req-id">BR-103</span></td><td>Verbal commitments made in any channel (calls, meetings, Slack) must be captured as written records linked to the relevant deal within 24 hours</td><td><span class="pill pill-must">Must</span></td></tr>
-      <tr><td><span class="req-id">BR-104</span></td><td>Rejected and On-Hold deals must be tracked with mandatory reason codes, original stage at time of rejection, and a revival review mechanism</td><td><span class="pill pill-must">Must</span></td></tr>
-      <tr><td><span class="req-id">BR-105</span></td><td>Maximum time duration (SLA) must be defined for each stage. System must warn at 75%, alert at 100%, and auto-escalate at 125% of SLA</td><td><span class="pill pill-must">Must</span></td></tr>
-      <tr><td><span class="req-id">BR-106</span></td><td>All deal-related communications (emails, Slack messages, call notes) must be centralized and linked to the deal record</td><td><span class="pill pill-should">Should</span></td></tr>
-      <tr><td><span class="req-id">BR-107</span></td><td>System must provide a complete, chronological activity history for every deal — viewable by any stakeholder with access</td><td><span class="pill pill-must">Must</span></td></tr>
-      <tr><td><span class="req-id">BR-108</span></td><td>Deals that meet auto-rejection criteria (e.g., existing distributor conflict, below-threshold financials) must be flagged before advancing past MQL</td><td><span class="pill pill-should">Should</span></td></tr>
-      <tr><td><span class="req-id">BR-109</span></td><td>Weekly pipeline digest must be auto-generated and distributed to defined stakeholders</td><td><span class="pill pill-should">Should</span></td></tr>
-      <tr><td><span class="req-id">BR-110</span></td><td>On-Hold deals must have a mandatory revival date. System must auto-remind the deal owner when the revival date arrives.</td><td><span class="pill pill-must">Must</span></td></tr>
-    </tbody>
-  </table>
-
-  <h3 style="margin-top:1.5rem;">People Requirements (BR-200)</h3>
-  <table>
-    <thead><tr><th style="width:70px;">ID</th><th>Requirement</th><th style="width:80px;">Priority</th></tr></thead>
-    <tbody>
-      <tr><td><span class="req-id">BR-201</span></td><td>Each deal must have exactly one primary owner at any given time. The owner is accountable for advancing the deal.</td><td><span class="pill pill-must">Must</span></td></tr>
-      <tr><td><span class="req-id">BR-202</span></td><td>Primary ownership must transfer automatically when a deal moves from BD-owned stages (Connect→Opportunity) to Brand-owned stages (Signed→Launch)</td><td><span class="pill pill-must">Must</span></td></tr>
-      <tr><td><span class="req-id">BR-203</span></td><td>Support/dependency tags must be assignable per deal (e.g., tag Central Team for legal review, Finance for margin analysis)</td><td><span class="pill pill-must">Must</span></td></tr>
-      <tr><td><span class="req-id">BR-204</span></td><td>BD team must have admin/governance privileges: ability to override stage changes, manage permissions, configure automation rules</td><td><span class="pill pill-must">Must</span></td></tr>
-      <tr><td><span class="req-id">BR-205</span></td><td>Stage transitions from SQL onward must require explicit owner confirmation (no auto-advance without human sign-off for high-value stages)</td><td><span class="pill pill-should">Should</span></td></tr>
-      <tr><td><span class="req-id">BR-206</span></td><td>Any team member must be able to view the pipeline and deal details relevant to their role (view-only for non-owners)</td><td><span class="pill pill-must">Must</span></td></tr>
-      <tr><td><span class="req-id">BR-207</span></td><td>When a deal owner is unavailable (OOO, departed), the system must alert BD Lead to reassign within 24 hours</td><td><span class="pill pill-nice">Nice</span></td></tr>
-    </tbody>
-  </table>
-
-  <h3 style="margin-top:1.5rem;">Technology & AI Requirements (BR-300)</h3>
-  <table>
-    <thead><tr><th style="width:70px;">ID</th><th>Requirement</th><th style="width:80px;">Priority</th></tr></thead>
-    <tbody>
-      <tr><td><span class="req-id">BR-301</span></td><td>Gmail threads related to brands/deals must be automatically detected and linked to the relevant deal record in Notion</td><td><span class="pill pill-must">Must</span></td></tr>
-      <tr><td><span class="req-id">BR-302</span></td><td>Slack messages in BD channels containing deal-relevant information must auto-update the corresponding deal record</td><td><span class="pill pill-must">Must</span></td></tr>
-      <tr><td><span class="req-id">BR-303</span></td><td>AI must auto-calculate and update revenue potential for each deal based on brand data, market size, and comparable deals</td><td><span class="pill pill-should">Should</span></td></tr>
-      <tr><td><span class="req-id">BR-304</span></td><td>AI must flag deals that match pre-defined rejection criteria (bad financials, existing distributors Opptra can't compete with, unacceptable business models)</td><td><span class="pill pill-should">Should</span></td></tr>
-      <tr><td><span class="req-id">BR-305</span></td><td>All analyses, decks, proposals, and documents created for a deal must be stored and linked to the deal record to prevent rework and knowledge loss</td><td><span class="pill pill-must">Must</span></td></tr>
-      <tr><td><span class="req-id">BR-306</span></td><td>System must prevent duplicate deal creation by detecting brand-name and contact matches against existing records</td><td><span class="pill pill-should">Should</span></td></tr>
-      <tr><td><span class="req-id">BR-307</span></td><td>Stakeholder notifications must trigger automatically on stage transitions, SLA warnings, red flags, and key deal milestones per the RACI matrix</td><td><span class="pill pill-must">Must</span></td></tr>
-      <tr><td><span class="req-id">BR-308</span></td><td>All pipeline data must reside in a single unified Notion database ("BD Pipeline Database") to eliminate cross-database sync complexity and ensure BD team can self-manage without technical support</td><td><span class="pill pill-must">Must</span></td></tr>
-      <tr><td><span class="req-id">BR-309</span></td><td>System must support Google Sheets → Notion data migration for initial 100+ deal import with field mapping validation</td><td><span class="pill pill-must">Must</span></td></tr>
-      <tr><td><span class="req-id">BR-310</span></td><td>All AI-generated actions (lead creation, field updates, notifications) must include a confidence score and be auditable</td><td><span class="pill pill-nice">Nice</span></td></tr>
-    </tbody>
-  </table>
-</div>
-
-<!-- 1.5 BUSINESS RULES -->
-<div class="section" id="brd-rules">
-  <h2>1.5 &nbsp; Business Rules</h2>
-
-  <h3>Stage Transition Rules</h3>
-  <table>
-    <thead><tr><th>Rule ID</th><th>Rule</th></tr></thead>
-    <tbody>
-      <tr><td><span class="req-id">STR-01</span></td><td>Deals can only advance one stage at a time (no skipping). Exception: direct move to Rejected or On Hold from any stage.</td></tr>
-      <tr><td><span class="req-id">STR-02</span></td><td>Backward movement (regression) is allowed but must include a reason note. Triggers notification to BD Lead.</td></tr>
-      <tr><td><span class="req-id">STR-03</span></td><td>Transitions from SQL → Opportunity require CEO/leadership approval if estimated revenue exceeds $500K/year.</td></tr>
-      <tr><td><span class="req-id">STR-04</span></td><td>Transitions from Opportunity → Signed require contract upload confirmation.</td></tr>
-      <tr><td><span class="req-id">STR-05</span></td><td>Transition from Signed → Launch requires Brand Team acknowledgment of ownership transfer.</td></tr>
-    </tbody>
-  </table>
-
-  <h3 style="margin-top:1.5rem;">SLA Rules</h3>
-  <table>
-    <thead><tr><th>Stage</th><th>Max Duration</th><th>Warning (75%)</th><th>Alert (100%)</th><th>Auto-Action (125%)</th></tr></thead>
-    <tbody>
-      <tr><td>Connect</td><td>14 days</td><td>Day 10</td><td>Day 14</td><td>Auto-reject (No Response) at Day 18</td></tr>
-      <tr><td>Lead</td><td>21 days</td><td>Day 15</td><td>Day 21</td><td>Auto-move to On Hold at Day 26</td></tr>
-      <tr><td>MQL</td><td>14 days</td><td>Day 10</td><td>Day 14</td><td>Escalate to BD Lead at Day 18</td></tr>
-      <tr><td>SQL</td><td>21 days</td><td>Day 15</td><td>Day 21</td><td>Escalate to Leadership at Day 26</td></tr>
-      <tr><td>Opportunity</td><td>30 days</td><td>Day 22</td><td>Day 30</td><td>Escalate to Leadership at Day 38</td></tr>
-      <tr><td>Signed</td><td>14 days</td><td>Day 10</td><td>Day 14</td><td>Escalate to Brand Team Lead at Day 18</td></tr>
-    </tbody>
-  </table>
-
-  <h3 style="margin-top:1.5rem;">Auto-Rejection Criteria</h3>
-  <table>
-    <thead><tr><th>Criterion</th><th>Threshold</th><th>Action</th></tr></thead>
-    <tbody>
-      <tr><td>Existing distributor that Opptra cannot compete with</td><td>Identified via brand research</td><td>Red flag → Recommend rejection</td></tr>
-      <tr><td>Minimum margin requirement</td><td>Below [X]% gross margin (configurable)</td><td>Red flag → Block SQL advancement</td></tr>
-      <tr><td>Brand financial instability</td><td>Negative cash flow, pending litigation, etc.</td><td>Red flag → Require BD Lead review</td></tr>
-      <tr><td>Incompatible business model</td><td>Direct-to-consumer only, no wholesale</td><td>Red flag → Recommend rejection</td></tr>
-      <tr><td>No response after SLA</td><td>14 days with 3+ follow-ups at Connect stage</td><td>Auto-reject with code "No Response"</td></tr>
-    </tbody>
-  </table>
-</div>
-
-<!-- 1.6 CONSTRAINTS & ASSUMPTIONS -->
-<div class="section" id="brd-cons">
-  <h2>1.6 &nbsp; Constraints & Assumptions</h2>
-  <table>
-    <thead><tr><th style="width:100px;">Type</th><th>Description</th></tr></thead>
-    <tbody>
-      <tr><td><strong>Constraint</strong></td><td>Must use Notion as the primary database/CRM platform (existing investment and team familiarity)</td></tr>
-      <tr><td><strong>Constraint</strong></td><td>Must integrate with the team's existing Gmail accounts and Slack workspace</td></tr>
-      <tr><td><strong>Constraint</strong></td><td>Claude AI is the automation engine (no additional SaaS CRM purchase)</td></tr>
-      <tr><td><strong>Constraint</strong></td><td>3-person BD team — solution must not add workload; must reduce it</td></tr>
-      <tr><td><strong>Constraint</strong></td><td>1-week implementation timeline for core functionality</td></tr>
-      <tr><td><strong>Assumption</strong></td><td>All BD team members have Notion accounts with appropriate plan level</td></tr>
-      <tr><td><strong>Assumption</strong></td><td>Gmail and Slack APIs are accessible for integration (permissions granted)</td></tr>
-      <tr><td><strong>Assumption</strong></td><td>Existing Google Sheets data can be exported in CSV format for migration</td></tr>
-      <tr><td><strong>Assumption</strong></td><td>Team will dedicate 2 hours on Day 2 for stage alignment workshop</td></tr>
-      <tr><td><strong>Assumption</strong></td><td>SLA durations and rejection criteria can be finalized in a single workshop session</td></tr>
-    </tbody>
-  </table>
-</div>
-
-<!-- 1.7 ACCEPTANCE CRITERIA -->
-<div class="section" id="brd-accept">
-  <h2>1.7 &nbsp; Acceptance Criteria</h2>
-  <table>
-    <thead><tr><th>Req ID</th><th>Acceptance Test</th><th>Pass Criteria</th></tr></thead>
-    <tbody>
-      <tr><td>BR-101</td><td>Attempt to create a deal without required stage fields</td><td>System prevents creation; prompts for required fields</td></tr>
-      <tr><td>BR-102</td><td>Advance a deal from Lead → MQL</td><td>Activity log shows timestamp, actor, and "Advanced to MQL" with notes</td></tr>
-      <tr><td>BR-103</td><td>Post a commitment in Slack mentioning a deal</td><td>Deal's activity log updated within 1 hour with commitment text</td></tr>
-      <tr><td>BR-104</td><td>Reject a deal at SQL stage</td><td>Deal moves to Rejected; reason code required and captured; original stage recorded</td></tr>
-      <tr><td>BR-105</td><td>Leave a deal in Connect stage for 11 days</td><td>Warning notification sent to deal owner at Day 10</td></tr>
-      <tr><td>BR-201</td><td>Check any deal in pipeline</td><td>Exactly one primary owner is assigned; field is non-empty</td></tr>
-      <tr><td>BR-202</td><td>Move deal from Opportunity → Signed</td><td>Ownership auto-transfers to Brand Team; both parties notified</td></tr>
-      <tr><td>BR-301</td><td>Send a brand inquiry email to BD inbox</td><td>New deal record created in Notion within 1 hour; email thread linked</td></tr>
-      <tr><td>BR-306</td><td>Attempt to create a deal for an existing brand</td><td>Duplicate warning shown with link to existing deal</td></tr>
-      <tr><td>BR-307</td><td>Advance deal from MQL → SQL</td><td>Relevant stakeholders per RACI receive Slack notification within 5 minutes</td></tr>
-    </tbody>
-  </table>
-</div>
-
-<!-- ============================================================ -->
-<!-- PART 2: PRODUCT REQUIREMENTS DOCUMENT -->
-<!-- ============================================================ -->
-<div class="part-divider">
-  <h1>Part 2</h1>
-  <div style="font-family:var(--font-heading); font-size:1.5rem; font-weight:300;">Product Requirements Document (PRD)</div>
-  <p>How to build it — specifications, schemas, and workflows</p>
-</div>
-
-<!-- 2.1 PRODUCT OVERVIEW -->
-<div class="section" id="prd-over">
-  <h2>2.1 &nbsp; Product Overview & Personas</h2>
-
-  <div class="callout">
-    <strong>Product:</strong> Opptra BD Command Center<br>
-    <strong>Vision:</strong> A single system where every brand deal is visible, every action is tracked, every SLA is enforced, and AI handles the operations work — so the BD team can focus on relationships and closing.
-  </div>
-
-  <h3 style="margin-top:1.5rem;">User Personas</h3>
-  <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin:1rem 0;">
-    <div style="border:1px solid #eee; border-radius:8px; padding:1.2rem; border-top:4px solid var(--opptra-navy);">
-      <h4>BD Manager (Primary)</h4>
-      <p style="font-size:0.85rem; margin:0.5rem 0;"><strong>Goal:</strong> Manage 30-40 leads efficiently without dropping any</p>
-      <p style="font-size:0.85rem;"><strong>Pain:</strong> Spends 1-2 hrs/day on data entry and status updates instead of selling</p>
-      <p style="font-size:0.85rem;"><strong>Needs:</strong> Automated lead capture, SLA reminders, one-click stage updates, deal history at a glance</p>
+    <div class="callout" style="border-left-color: #f57f17;">
+        <strong>🔁 Human-in-the-Loop (HITL) Principle:</strong> No automation writes to Notion without human approval. Every detected event is posted to Slack first. The BD team reviews and approves (✅) or rejects (❌) via reaction before any pipeline change is made. This ensures data quality and team trust during the automation ramp-up phase.
     </div>
-    <div style="border:1px solid #eee; border-radius:8px; padding:1.2rem; border-top:4px solid var(--opptra-navy);">
-      <h4>Brand Team Lead</h4>
-      <p style="font-size:0.85rem; margin:0.5rem 0;"><strong>Goal:</strong> Receive clean, complete deal handoffs at Signed stage</p>
-      <p style="font-size:0.85rem;"><strong>Pain:</strong> Gets surprised by deals they weren't tracking; missing context at handoff</p>
-      <p style="font-size:0.85rem;"><strong>Needs:</strong> Visibility into SQL+ deals, complete deal package at handoff, no verbal surprises</p>
+
+    <p style="margin-top: 1.5rem;"><strong>Architecture Change:</strong> The system now uses a <strong>single unified "BD Pipeline" database</strong> instead of separate Deals, Brands, Activity Log, and Contacts databases. Each row represents a brand-geo unit (e.g., "Nike — India", "Nike — GCC") with all related information contained within that row and its page content. This simplification prioritizes adoption for a 3-person team while maintaining a clear migration path to linked databases in Phase 2.</p>
+</section>
+
+<section id="prd-schema">
+    <h2>2.4 Notion Database Schema (Unified Single-Table)</h2>
+
+    <div class="callout">
+        <strong>Architecture Decision:</strong> This system uses a single unified database instead of the traditional 4-database CRM architecture (Deals + Brands + Activity Log + Contacts). This decision prioritizes adoption and simplicity for a 3-person non-technical BD team. Each brand-geo row contains all deal and brand information. Activity logs and documents are stored as page content within each row. Phase 2 (Weeks 3-4) introduces linked databases once the team is comfortable with the core workflow.
     </div>
-    <div style="border:1px solid #eee; border-radius:8px; padding:1.2rem; border-top:4px solid var(--opptra-orange);">
-      <h4>Central/Support Team</h4>
-      <p style="font-size:0.85rem; margin:0.5rem 0;"><strong>Goal:</strong> Respond to BD requests with clear context and reasonable timelines</p>
-      <p style="font-size:0.85rem;"><strong>Pain:</strong> Gets ad-hoc requests via Slack with no context; unclear priority</p>
-      <p style="font-size:0.85rem;"><strong>Needs:</strong> Structured support requests linked to deals, clear deadlines</p>
+
+    <h4>BD Pipeline Database (Unified)</h4>
+
+    <div class="schema-section">
+        <h5>Core Deal Fields</h5>
+        <div class="table-wrapper">
+            <table>
+                <tr style="background: var(--navy); color: white;">
+                    <th style="color: white;">Field Name</th>
+                    <th style="color: white;">Type</th>
+                    <th style="color: white;">Options / Formula</th>
+                    <th style="color: white;">Required</th>
+                </tr>
+                <tr>
+                    <td><strong>Brand Name — Geo</strong></td>
+                    <td>Title</td>
+                    <td>Format: "[Brand Name] — [Market/Region]"</td>
+                    <td>Yes</td>
+                </tr>
+                <tr>
+                    <td><strong>Brand Name</strong></td>
+                    <td>Text</td>
+                    <td>e.g., "Nike"</td>
+                    <td>Yes</td>
+                </tr>
+                <tr>
+                    <td><strong>Key Geo</strong></td>
+                    <td>Select</td>
+                    <td>India | SEA | GCC</td>
+                    <td>Yes</td>
+                </tr>
+                <tr>
+                    <td><strong>Category</strong></td>
+                    <td>Select</td>
+                    <td>Apparel | Footwear | Accessories | Beauty</td>
+                    <td>Yes</td>
+                </tr>
+                <tr>
+                    <td><strong>Sub-Category</strong></td>
+                    <td>Text</td>
+                    <td>Specific product niche</td>
+                    <td>No</td>
+                </tr>
+                <tr>
+                    <td><strong>Quadrant</strong></td>
+                    <td>Select</td>
+                    <td>1a | 1b | 2 | 3 | 4</td>
+                    <td>Yes</td>
+                </tr>
+                <tr>
+                    <td><strong>Status</strong></td>
+                    <td>Select</td>
+                    <td>Wishlist | Lead | MQL | SQL | Opportunity | Signed | Active | Hold | Rejected</td>
+                    <td>Yes</td>
+                </tr>
+                <tr>
+                    <td><strong>Stage Entry Date</strong></td>
+                    <td>Date</td>
+                    <td>Auto-set on stage change</td>
+                    <td>Auto</td>
+                </tr>
+                <tr>
+                    <td><strong>Days in Stage</strong></td>
+                    <td>Formula</td>
+                    <td>dateBetween(now(), prop("Stage Entry Date"), "days")</td>
+                    <td>Auto</td>
+                </tr>
+                <tr>
+                    <td><strong>SLA Status</strong></td>
+                    <td>Formula</td>
+                    <td>On Track | Warning | Breached (based on stage SLA limits)</td>
+                    <td>Auto</td>
+                </tr>
+            </table>
+        </div>
     </div>
-    <div style="border:1px solid #eee; border-radius:8px; padding:1.2rem; border-top:4px solid var(--opptra-orange);">
-      <h4>CEO / Leadership</h4>
-      <p style="font-size:0.85rem; margin:0.5rem 0;"><strong>Goal:</strong> Understand pipeline health and make investment/approval decisions</p>
-      <p style="font-size:0.85rem;"><strong>Pain:</strong> No reliable pipeline data; learns about deals too late</p>
-      <p style="font-size:0.85rem;"><strong>Needs:</strong> Weekly pipeline digest, revenue forecast, escalation on big deals</p>
+
+    <div class="schema-section">
+        <h5>People & Ownership Fields</h5>
+        <div class="table-wrapper">
+            <table>
+                <tr style="background: var(--navy); color: white;">
+                    <th style="color: white;">Field Name</th>
+                    <th style="color: white;">Type</th>
+                    <th style="color: white;">Description</th>
+                    <th style="color: white;">Required</th>
+                </tr>
+                <tr>
+                    <td><strong>BD Owner</strong></td>
+                    <td>Person</td>
+                    <td>Internal BD team member (primary owner)</td>
+                    <td>Yes</td>
+                </tr>
+                <tr>
+                    <td><strong>Brand Owner</strong></td>
+                    <td>Text</td>
+                    <td>Brand-side contact name</td>
+                    <td>No</td>
+                </tr>
+                <tr>
+                    <td><strong>Brand Contact</strong></td>
+                    <td>Text</td>
+                    <td>Brand-side contact info (email/phone)</td>
+                    <td>No</td>
+                </tr>
+                <tr>
+                    <td><strong>Channel Lead</strong></td>
+                    <td>Person</td>
+                    <td>Internal channel lead</td>
+                    <td>No</td>
+                </tr>
+                <tr>
+                    <td><strong>Brand Vertical Lead</strong></td>
+                    <td>Person</td>
+                    <td>Internal brand vertical lead</td>
+                    <td>No</td>
+                </tr>
+                <tr>
+                    <td><strong>Consultant</strong></td>
+                    <td>Text</td>
+                    <td>External consultant or advisor</td>
+                    <td>No</td>
+                </tr>
+            </table>
+        </div>
     </div>
-  </div>
-</div>
 
-<!-- 2.2 USER STORIES -->
-<div class="section" id="prd-stories">
-  <h2>2.2 &nbsp; User Stories</h2>
-
-  <h3>BD Manager Stories</h3>
-  <div class="user-story"><strong>US-01:</strong> As a BD Manager, I want new brand inquiries from Gmail to <strong>auto-create deals</strong> in Notion so that no lead goes untracked.</div>
-  <div class="user-story"><strong>US-02:</strong> As a BD Manager, I want to see <strong>how many days each deal has been in its current stage</strong> so I can prioritize stale deals.</div>
-  <div class="user-story"><strong>US-03:</strong> As a BD Manager, I want <strong>SLA reminders sent to me via Slack</strong> before a deal breaches its time limit so I can take action.</div>
-  <div class="user-story"><strong>US-04:</strong> As a BD Manager, I want to <strong>advance a deal to the next stage with one click</strong> and have the system auto-notify relevant stakeholders.</div>
-  <div class="user-story"><strong>US-05:</strong> As a BD Manager, I want <strong>verbal commitments I make in Slack to be captured</strong> on the deal record so the Brand Team isn't blindsided.</div>
-  <div class="user-story"><strong>US-06:</strong> As a BD Manager, I want to <strong>reject a deal with a reason code</strong> so the pipeline reflects reality and the deal can be revived later.</div>
-  <div class="user-story"><strong>US-07:</strong> As a BD Manager, I want <strong>AI to flag deals with red flags</strong> (distributor conflicts, bad terms) so I don't waste time on unviable opportunities.</div>
-
-  <h3 style="margin-top:1rem;">Brand Team Stories</h3>
-  <div class="user-story"><strong>US-08:</strong> As a Brand Team Lead, I want to <strong>see all deals at SQL stage and above</strong> so I can prepare for upcoming handoffs.</div>
-  <div class="user-story"><strong>US-09:</strong> As a Brand Team Lead, I want the <strong>deal record to contain all analyses, decks, and communications</strong> when ownership transfers to me so I don't have to re-do work.</div>
-  <div class="user-story"><strong>US-10:</strong> As a Brand Team Lead, I want to be <strong>automatically notified when a deal reaches Signed</strong> with a complete deal package.</div>
-
-  <h3 style="margin-top:1rem;">Central/Support Team Stories</h3>
-  <div class="user-story"><strong>US-11:</strong> As a Central Team member, I want to <strong>receive support requests as tagged tasks linked to specific deals</strong> so I have full context.</div>
-  <div class="user-story"><strong>US-12:</strong> As a Central Team member, I want to <strong>see my pending support requests in one view</strong> so I can prioritize my work.</div>
-
-  <h3 style="margin-top:1rem;">Leadership Stories</h3>
-  <div class="user-story"><strong>US-13:</strong> As CEO, I want a <strong>weekly pipeline digest</strong> showing deal flow, revenue forecast, SLA compliance, and top deals requiring my attention.</div>
-  <div class="user-story"><strong>US-14:</strong> As CEO, I want to be <strong>alerted when a high-value deal (>$500K) reaches Opportunity stage</strong> so I can provide input.</div>
-  <div class="user-story"><strong>US-15:</strong> As CEO, I want to see the <strong>reason distribution for rejected deals</strong> to understand why we're losing opportunities.</div>
-
-  <h3 style="margin-top:1rem;">System/AI Stories</h3>
-  <div class="user-story"><strong>US-16:</strong> As the system, I want to <strong>prevent duplicate deal creation</strong> by matching brand names and contacts against existing records.</div>
-  <div class="user-story"><strong>US-17:</strong> As the system, I want to <strong>auto-calculate revenue potential</strong> when a deal reaches MQL based on brand data and market comparables.</div>
-  <div class="user-story"><strong>US-18:</strong> As the system, I want to <strong>auto-remind deal owners of On-Hold deals</strong> when their revival date arrives.</div>
-</div>
-
-<!-- 2.3 SYSTEM ARCHITECTURE -->
-<div class="section" id="prd-arch">
-  <h2>2.3 &nbsp; System Architecture</h2>
-
-  <h3>Data Flow Diagram</h3>
-  <div style="background:#f9f9fb; border-radius:8px; padding:1.5rem; margin:1rem 0;">
-    <div class="arch-row">
-      <div class="arch-box" style="background:#e3f2fd; border:2px solid #1565c0;">📧 <strong>Gmail</strong><br><span style="font-size:0.75rem;">Brand emails arrive</span></div>
-      <div class="arch-box" style="background:#f3e5f5; border:2px solid #7b1fa2;">💬 <strong>Slack</strong><br><span style="font-size:0.75rem;">BD channel messages</span></div>
-      <div class="arch-box" style="background:#e8f5e9; border:2px solid #2e7d32;">✋ <strong>Manual</strong><br><span style="font-size:0.75rem;">Call notes, meetings</span></div>
+    <div class="schema-section">
+        <h5>Financial & Revenue Fields</h5>
+        <div class="table-wrapper">
+            <table>
+                <tr style="background: var(--navy); color: white;">
+                    <th style="color: white;">Field Name</th>
+                    <th style="color: white;">Type</th>
+                    <th style="color: white;">Description</th>
+                    <th style="color: white;">Required</th>
+                </tr>
+                <tr>
+                    <td><strong>Existing Revenue USD M</strong></td>
+                    <td>Number, $</td>
+                    <td>Brand's current annual revenue (millions USD)</td>
+                    <td>No</td>
+                </tr>
+                <tr>
+                    <td><strong>Y1 USD M</strong></td>
+                    <td>Number, $</td>
+                    <td>Year 1 revenue projection (millions USD)</td>
+                    <td>No</td>
+                </tr>
+                <tr>
+                    <td><strong>Y3 2028 USD M</strong></td>
+                    <td>Number, $</td>
+                    <td>Year 3 revenue projection (millions USD)</td>
+                    <td>No</td>
+                </tr>
+                <tr>
+                    <td><strong>Weighted Revenue</strong></td>
+                    <td>Formula</td>
+                    <td>Revenue × stage probability (used for pipeline forecasting)</td>
+                    <td>Auto</td>
+                </tr>
+            </table>
+        </div>
     </div>
-    <div style="text-align:center; font-size:1.3rem; color:var(--opptra-orange); margin:0.5rem 0;">▼ ── Ingest ── ▼</div>
-    <div class="arch-row">
-      <div class="arch-box" style="background:var(--opptra-navy); color:white; border:2px solid var(--opptra-orange); max-width:500px; flex:3;">
-        🧠 <strong style="color:var(--opptra-orange);">Claude AI Orchestrator</strong><br>
-        <span style="font-size:0.75rem;">Parse → Classify → Enrich → Route → Notify</span>
-      </div>
+
+    <div class="schema-section">
+        <h5>Brand & Market Fields</h5>
+        <div class="table-wrapper">
+            <table>
+                <tr style="background: var(--navy); color: white;">
+                    <th style="color: white;">Field Name</th>
+                    <th style="color: white;">Type</th>
+                    <th style="color: white;">Description</th>
+                </tr>
+                <tr>
+                    <td><strong>Country of Origin</strong></td>
+                    <td>Select</td>
+                    <td>Brand's country of origin</td>
+                </tr>
+                <tr>
+                    <td><strong>Global Website</strong></td>
+                    <td>URL</td>
+                    <td>Brand's official global website</td>
+                </tr>
+                <tr>
+                    <td><strong>Markets</strong></td>
+                    <td>Multi-select</td>
+                    <td>India | UAE | KSA | Singapore | Malaysia | Indonesia | Thailand</td>
+                </tr>
+                <tr>
+                    <td><strong>Platforms</strong></td>
+                    <td>Multi-select</td>
+                    <td>Amazon | Noon | Shopee | Lazada | Flipkart | TikTok Shop | Own Website</td>
+                </tr>
+                <tr>
+                    <td><strong>Source</strong></td>
+                    <td>Select</td>
+                    <td>Referral | Consultant | Trade Fair | Inbound | Outbound Research</td>
+                </tr>
+                <tr>
+                    <td><strong>Hero Items</strong></td>
+                    <td>Text</td>
+                    <td>Top 3-5 hero SKUs for the brand</td>
+                </tr>
+                <tr>
+                    <td><strong>Target Consumer</strong></td>
+                    <td>Text</td>
+                    <td>Brand's target consumer profile</td>
+                </tr>
+                <tr>
+                    <td><strong>Design Inspiration</strong></td>
+                    <td>Text</td>
+                    <td>Key design / aesthetic direction</td>
+                </tr>
+            </table>
+        </div>
     </div>
-    <div style="text-align:center; font-size:1.3rem; color:var(--opptra-orange); margin:0.5rem 0;">▼ ── Store ── ▼</div>
-    <div class="arch-row">
-      <div class="arch-box" style="background:var(--opptra-yellow); border:2px solid var(--opptra-navy); max-width:500px; flex:3;">📊 <strong>BD Pipeline Database</strong><br><span style="font-size:0.75rem;">Unified single-table · Brands + Deals + Contacts + Activity</span></div>
+
+    <div class="schema-section">
+        <h5>Risk & Rejection Fields</h5>
+        <div class="table-wrapper">
+            <table>
+                <tr style="background: var(--navy); color: white;">
+                    <th style="color: white;">Field Name</th>
+                    <th style="color: white;">Type</th>
+                    <th style="color: white;">Description</th>
+                </tr>
+                <tr>
+                    <td><strong>Red Flags</strong></td>
+                    <td>Multi-select</td>
+                    <td>Distributor Conflict | Low Margin | Financial Risk | Business Model | Regulatory | Other</td>
+                </tr>
+                <tr>
+                    <td><strong>Rejection Reason</strong></td>
+                    <td>Select</td>
+                    <td>If Rejected: No Response | Brand Declined | Distributor Conflict | Unacceptable Terms | Market Mismatch | Financial Red Flags | Internal Decision</td>
+                </tr>
+                <tr>
+                    <td><strong>On Hold Reason</strong></td>
+                    <td>Select</td>
+                    <td>If On Hold: Brand Timing | Internal Capacity | Pending Legal | Market Conditions | Budget Cycle</td>
+                </tr>
+                <tr>
+                    <td><strong>Revival Date</strong></td>
+                    <td>Date</td>
+                    <td>When to re-engage an On-Hold deal (mandatory for On Hold)</td>
+                </tr>
+            </table>
+        </div>
     </div>
-    <div style="text-align:center; font-size:1.3rem; color:var(--opptra-orange); margin:0.5rem 0;">▼ ── Output ── ▼</div>
-    <div class="arch-row">
-      <div class="arch-box" style="background:#fff3e0; border:2px solid var(--opptra-orange);">🔔 <strong>Notifications</strong><br><span style="font-size:0.75rem;">Slack + Email</span></div>
-      <div class="arch-box" style="background:#fff3e0; border:2px solid var(--opptra-orange);">📊 <strong>Dashboards</strong><br><span style="font-size:0.75rem;">Notion views</span></div>
-      <div class="arch-box" style="background:#fff3e0; border:2px solid var(--opptra-orange);">📈 <strong>Reports</strong><br><span style="font-size:0.75rem;">Weekly digest</span></div>
+
+    <div class="schema-section">
+        <h5>Action & Timeline Fields</h5>
+        <div class="table-wrapper">
+            <table>
+                <tr style="background: var(--navy); color: white;">
+                    <th style="color: white;">Field Name</th>
+                    <th style="color: white;">Type</th>
+                    <th style="color: white;">Description</th>
+                </tr>
+                <tr>
+                    <td><strong>Next Action</strong></td>
+                    <td>Text</td>
+                    <td>What needs to happen next</td>
+                </tr>
+                <tr>
+                    <td><strong>Next Action Due</strong></td>
+                    <td>Date</td>
+                    <td>When the next action is due</td>
+                </tr>
+                <tr>
+                    <td><strong>First Contact</strong></td>
+                    <td>Date</td>
+                    <td>Date of initial brand contact</td>
+                </tr>
+                <tr>
+                    <td><strong>Pitch Date</strong></td>
+                    <td>Date</td>
+                    <td>Date Opptra pitched to the brand</td>
+                </tr>
+                <tr>
+                    <td><strong>MOU Signed</strong></td>
+                    <td>Date</td>
+                    <td>Date MOU was signed</td>
+                </tr>
+                <tr>
+                    <td><strong>Contract Signed</strong></td>
+                    <td>Date</td>
+                    <td>Date full contract was signed</td>
+                </tr>
+                <tr>
+                    <td><strong>Go Live</strong></td>
+                    <td>Date</td>
+                    <td>Date brand went live on platforms</td>
+                </tr>
+            </table>
+        </div>
     </div>
-  </div>
-</div>
 
-<!-- 2.4 NOTION DATABASE SCHEMA -->
-<div class="section" id="prd-schema">
-  <h2>2.4 &nbsp; Notion Database Schema (Unified Single-Table)</h2>
-
-  <div style="background:var(--opptra-yellow); border-left:4px solid var(--opptra-orange); padding:1rem 1.25rem; border-radius:0 8px 8px 0; margin-bottom:1.5rem;">
-    <strong style="color:var(--opptra-navy);">Architecture Decision:</strong> A single unified database replaces the original 4-database design (Deals DB, Brands DB, Activity Log, Contacts). This reduces complexity for non-technical BD team members, eliminates cross-database sync issues, and keeps all pipeline data in one view. Activity logs are captured as page content within each row. Brand contacts are stored as direct fields. Phase 2 enhancements (Weeks 3-4) will add dedicated Activity Log and Contacts databases once the team is comfortable with the system.
-  </div>
-
-  <h3>BD Pipeline Database &mdash; "Softline Brands Database (Lead to Active)"</h3>
-  <table class="field-table">
-    <thead><tr><th>Field Name</th><th>Type</th><th>Options / Formula</th><th>Required</th></tr></thead>
-    <tbody>
-      <tr><td colspan="4" style="background:var(--opptra-navy); color:white; font-weight:700;">Core Identity</td></tr>
-      <tr><td>Brand Name</td><td>Title</td><td>Official brand name (one row per brand-geo combination)</td><td>Yes</td></tr>
-      <tr><td>Key Geo</td><td>Select</td><td>India | SEA | GCC</td><td>Yes</td></tr>
-      <tr><td>Category</td><td>Select</td><td>Apparel | Footwear | Accessories | Beauty</td><td>Yes</td></tr>
-      <tr><td>Sub-Category</td><td>Text</td><td>Specific product niche (e.g., Watches, Luggage, Innerwear)</td><td>No</td></tr>
-      <tr><td>Quadrant</td><td>Select</td><td>1a | 1b | 2 | 3 | 4</td><td>No</td></tr>
-
-      <tr><td colspan="4" style="background:var(--opptra-navy); color:white; font-weight:700;">Pipeline Stage</td></tr>
-      <tr><td>Status</td><td>Select</td><td>Wishlist | Lead | MQL | SQL | Opportunity | Signed | Active | Hold | Rejected</td><td>Yes</td></tr>
-      <tr><td>Stage Entry Date</td><td>Date</td><td>Auto-set on stage change</td><td>Auto</td></tr>
-      <tr><td>Days in Stage</td><td>Formula</td><td><code>dateBetween(now(), prop("Stage Entry Date"), "days")</code></td><td>Auto</td></tr>
-      <tr><td>SLA Status</td><td>Formula</td><td>if Days/SLA &lt; 0.75 → "On Track" | &lt; 1.0 → "Warning" | ≥ 1.0 → "Breached"</td><td>Auto</td></tr>
-      <tr><td>Signed Timeline</td><td>Select</td><td>Q4'25 | Q1'26 | Q2'26 | Q3'26 | Q4'26</td><td>No</td></tr>
-
-      <tr><td colspan="4" style="background:var(--opptra-navy); color:white; font-weight:700;">Ownership & Team</td></tr>
-      <tr><td>BD Owner</td><td>Person</td><td>Primary BD team member responsible</td><td>Yes</td></tr>
-      <tr><td>Brand Owner</td><td>Text</td><td>Brand-side contact name</td><td>No</td></tr>
-      <tr><td>Brand Contact</td><td>Text</td><td>Brand-side contact email / phone</td><td>No</td></tr>
-      <tr><td>Channel Lead</td><td>Person</td><td>Opptra channel lead assigned</td><td>No</td></tr>
-      <tr><td>Brand Vertical Lead</td><td>Person</td><td>Opptra vertical lead assigned</td><td>No</td></tr>
-      <tr><td>Consultant</td><td>Text</td><td>External consultant or agency involved</td><td>No</td></tr>
-
-      <tr><td colspan="4" style="background:var(--opptra-navy); color:white; font-weight:700;">Revenue & Financials</td></tr>
-      <tr><td>Existing Revenue (USD M)</td><td>Number</td><td>Current annual revenue in USD millions ($ format)</td><td>No</td></tr>
-      <tr><td>Y1 (USD M)</td><td>Number</td><td>Year 1 revenue projection in USD millions ($ format)</td><td>No</td></tr>
-      <tr><td>Y3 2028 (USD M)</td><td>Number</td><td>Year 3 (2028) revenue projection in USD millions ($ format)</td><td>No</td></tr>
-      <tr><td>Weighted Revenue</td><td>Formula</td><td>Y1 × stage probability (Wishlist=5%, Lead=10%, MQL=20%, SQL=40%, Opp=60%, Signed=90%, Active=100%)</td><td>Auto</td></tr>
-
-      <tr><td colspan="4" style="background:var(--opptra-navy); color:white; font-weight:700;">Markets & Channels</td></tr>
-      <tr><td>Markets</td><td>Multi-select</td><td>Target markets within the geo region</td><td>No</td></tr>
-      <tr><td>Platforms</td><td>Multi-select</td><td>E-commerce platforms (Shopee, Lazada, Amazon, Flipkart, Noon, etc.)</td><td>No</td></tr>
-      <tr><td>Country of Origin</td><td>Select</td><td>Brand's home country</td><td>No</td></tr>
-      <tr><td>Global Website</td><td>URL</td><td>Brand's official website</td><td>No</td></tr>
-
-      <tr><td colspan="4" style="background:var(--opptra-navy); color:white; font-weight:700;">Risk & Status Tracking</td></tr>
-      <tr><td>Red Flags</td><td>Multi-select</td><td>Distributor Conflict | Low Margin | Financial Risk | Business Model | Regulatory | Other</td><td>No</td></tr>
-      <tr><td>Rejection Reason</td><td>Select</td><td>No Response | Brand Declined | Distributor Conflict | Unacceptable Terms | Market Mismatch | Financial Red Flags | Internal Decision</td><td>If Rejected</td></tr>
-      <tr><td>On Hold Reason</td><td>Select</td><td>Brand Timing | Internal Capacity | Pending Legal | Market Conditions | Budget Cycle</td><td>If Hold</td></tr>
-      <tr><td>Revival Date</td><td>Date</td><td>When to re-engage (mandatory for Hold)</td><td>If Hold</td></tr>
-      <tr><td>Source</td><td>Select</td><td>Inbound Email | Cold Outreach | Referral | Event | LinkedIn | Other</td><td>No</td></tr>
-
-      <tr><td colspan="4" style="background:var(--opptra-navy); color:white; font-weight:700;">Key Dates & Actions</td></tr>
-      <tr><td>Next Action</td><td>Text</td><td>What needs to happen next</td><td>Yes</td></tr>
-      <tr><td>Next Action Due</td><td>Date</td><td>When the next action is due</td><td>Yes</td></tr>
-      <tr><td>First Contact</td><td>Date</td><td>Date of first outreach or inbound contact</td><td>No</td></tr>
-      <tr><td>Pitch Date</td><td>Date</td><td>Date pitch deck was presented</td><td>No</td></tr>
-      <tr><td>MOU Signed</td><td>Date</td><td>Date MOU was executed</td><td>No</td></tr>
-      <tr><td>Contract Signed</td><td>Date</td><td>Date final contract was signed</td><td>No</td></tr>
-      <tr><td>Go Live</td><td>Date</td><td>Date brand went live on platform</td><td>No</td></tr>
-
-      <tr><td colspan="4" style="background:var(--opptra-navy); color:white; font-weight:700;">Brand Intelligence</td></tr>
-      <tr><td>Hero Items</td><td>Text</td><td>Key products / hero SKUs</td><td>No</td></tr>
-      <tr><td>Target Consumer</td><td>Text</td><td>Target demographic and consumer profile</td><td>No</td></tr>
-      <tr><td>Design Inspiration</td><td>Text</td><td>Brand design notes and positioning</td><td>No</td></tr>
-      <tr><td>Documents</td><td>Files & Media</td><td>Analyses, decks, proposals, contracts</td><td>No</td></tr>
-
-      <tr><td colspan="4" style="background:var(--opptra-navy); color:white; font-weight:700;">System Fields</td></tr>
-      <tr><td>Created</td><td>Created time</td><td>Auto</td><td>Auto</td></tr>
-      <tr><td>Last Edited</td><td>Last edited time</td><td>Auto</td><td>Auto</td></tr>
-    </tbody>
-  </table>
-
-  <div style="background:#e8f5e9; border-left:4px solid #2e7d32; padding:0.75rem 1rem; border-radius:0 8px 8px 0; margin-top:1rem;">
-    <strong>Activity Logs:</strong> Stored as page content (comments / sub-blocks) within each brand row. Each entry records: date, activity type, actor, and details. This keeps context co-located with the brand and avoids the need for a separate database.
-  </div>
-</div>
-
-<!-- 2.5 WORKFLOW SPECIFICATIONS -->
-<div class="section" id="prd-workflows">
-  <h2>2.5 &nbsp; Workflow Specifications</h2>
-
-  <!-- WF-01 -->
-  <div class="auto-card">
-    <h4>
-      <span>WF-01: New Lead Ingestion (Gmail → Notion)</span>
-      <span class="pill pill-p0">P0</span>
-    </h4>
-    <p style="font-size:0.85rem; margin:0.5rem 0;"><strong>Trigger:</strong> New email received in BD Gmail inbox from an unrecognized or brand-relevant sender</p>
-    <div class="flow">
-      <div class="flow-box" style="background:#e3f2fd;">📧 Email arrives</div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-box" style="background:var(--opptra-navy); color:white;">🧠 Claude parses</div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-diamond">Brand inquiry?</div>
-      <div class="flow-arrow">→ Yes →</div>
-      <div class="flow-diamond">Duplicate?</div>
-      <div class="flow-arrow">→ No →</div>
-      <div class="flow-box" style="background:#e8f5e9;">✓ Create Deal</div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-box" style="background:#fff3e0;">🔔 Notify BD</div>
+    <div class="schema-section">
+        <h5>Documentation & History Fields</h5>
+        <div class="table-wrapper">
+            <table>
+                <tr style="background: var(--navy); color: white;">
+                    <th style="color: white;">Field Name</th>
+                    <th style="color: white;">Type</th>
+                    <th style="color: white;">Description</th>
+                </tr>
+                <tr>
+                    <td><strong>Documents</strong></td>
+                    <td>Files & Media</td>
+                    <td>Analyses, decks, proposals, contracts</td>
+                </tr>
+                <tr>
+                    <td><strong>Gmail Thread Links</strong></td>
+                    <td>URL (Multi)</td>
+                    <td>Links to relevant email threads</td>
+                </tr>
+                <tr>
+                    <td><strong>Slack Thread Links</strong></td>
+                    <td>URL (Multi)</td>
+                    <td>Links to relevant Slack threads</td>
+                </tr>
+                <tr>
+                    <td><strong>Last Edited Time</strong></td>
+                    <td>Auto</td>
+                    <td>Auto-updated on any change</td>
+                </tr>
+                <tr>
+                    <td><strong>Last Edited By</strong></td>
+                    <td>Auto</td>
+                    <td>Who last modified the record</td>
+                </tr>
+            </table>
+        </div>
     </div>
-    <table style="font-size:0.85rem;">
-      <tr><td style="width:120px;"><strong>Steps:</strong></td><td>1. Claude monitors inbox → 2. Parses sender, subject, body → 3. Classifies as brand inquiry (yes/no) → 4. If yes, checks for duplicates → 5. If new, creates Deal record at "Connect" stage → 6. Links email thread → 7. Notifies BD team via Slack</td></tr>
-      <tr><td><strong>Error handling:</strong></td><td>If confidence &lt;80%, flag for manual review instead of auto-creating. If duplicate found, link email to existing deal and notify owner.</td></tr>
-    </table>
-  </div>
 
-  <!-- WF-02 -->
-  <div class="auto-card">
-    <h4>
-      <span>WF-02: Stage Advancement</span>
-      <span class="pill pill-p0">P0</span>
-    </h4>
-    <p style="font-size:0.85rem; margin:0.5rem 0;"><strong>Trigger:</strong> Deal owner changes stage in Notion (or Claude suggests advancement)</p>
-    <div class="flow">
-      <div class="flow-box" style="background:#e3f2fd;">Owner updates stage</div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-diamond">Exit criteria met?</div>
-      <div class="flow-arrow">→ Yes →</div>
-      <div class="flow-box" style="background:var(--opptra-navy); color:white;">Log transition</div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-box" style="background:#e8f5e9;">Update SLA timer</div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-box" style="background:#fff3e0;">Notify per RACI</div>
+    <h4>Activity Log Architecture</h4>
+    <div class="emphasis">
+        <p><strong>What replaced the Activity Log Database?</strong></p>
+        <p>Notion's built-in page content. Each brand-geo row has its own dedicated page that serves as an activity log. Meeting notes, call summaries, commitments, documents, and activity history are stored within that page body. This approach:</p>
+        <ul>
+            <li>Keeps all information about a deal in one place (the deal page itself)</li>
+            <li>Reduces database complexity and admin overhead</li>
+            <li>Makes it easy for the team to see the full history of a deal by opening one page</li>
+            <li>Supports phase 2 migration to a dedicated linked Activity Log database when needed</li>
+        </ul>
     </div>
-    <table style="font-size:0.85rem;">
-      <tr><td style="width:120px;"><strong>Steps:</strong></td><td>1. Owner selects new stage → 2. System validates exit criteria for current stage → 3. If SQL+, check for approval requirement → 4. Log transition in Activity Log (actor, timestamp, from/to, notes) → 5. Reset Stage Entry Date → 6. If ownership transfer stage, reassign owner → 7. Notify stakeholders per RACI</td></tr>
-      <tr><td><strong>Error handling:</strong></td><td>If exit criteria not met, show warning but allow override with reason note. If approval required, hold in pending until approved.</td></tr>
-    </table>
-  </div>
 
-  <!-- WF-03 -->
-  <div class="auto-card">
-    <h4>
-      <span>WF-03: Stage Regression / Rejection</span>
-      <span class="pill pill-p0">P0</span>
-    </h4>
-    <p style="font-size:0.85rem; margin:0.5rem 0;"><strong>Trigger:</strong> Deal owner moves deal backward or to Rejected/On Hold</p>
-    <div class="flow">
-      <div class="flow-box" style="background:#fce4ec;">Owner regresses/rejects</div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-diamond">Reason code?</div>
-      <div class="flow-arrow">→ Provided →</div>
-      <div class="flow-box" style="background:var(--opptra-navy); color:white;">Log + Archive</div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-box" style="background:#fff3e0;">Notify BD Lead</div>
+    <h4>Contacts Architecture</h4>
+    <div class="emphasis">
+        <p><strong>What replaced the Contacts Database?</strong></p>
+        <p>Brand-side contacts are stored directly as fields on each brand-geo row (Brand Owner, Brand Contact). Internal team contacts (BD Owner, Channel Lead, Brand Vertical Lead) are Person fields that link to your Notion workspace members. This approach:</p>
+        <ul>
+            <li>Keeps deal and contact information together on the same row</li>
+            <li>Eliminates the need for a separate Contacts database for the initial workflow</li>
+            <li>Makes it easy to see who the key contacts are without navigating to a separate table</li>
+            <li>Supports phase 2 migration to a dedicated linked Contacts database for multi-deal relationships</li>
+        </ul>
     </div>
-    <table style="font-size:0.85rem;">
-      <tr><td style="width:120px;"><strong>Steps:</strong></td><td>1. Owner selects Rejected/On Hold/previous stage → 2. System requires reason code + notes → 3. Log in Activity Log → 4. If On Hold: require revival date → 5. Notify BD Lead → 6. Update pipeline metrics → 7. Move to filtered view</td></tr>
-    </table>
-  </div>
+</section>
 
-  <!-- WF-04 -->
-  <div class="auto-card">
-    <h4>
-      <span>WF-04: SLA Breach Escalation</span>
-      <span class="pill pill-p0">P0</span>
-    </h4>
-    <p style="font-size:0.85rem; margin:0.5rem 0;"><strong>Trigger:</strong> Daily scheduled check (or real-time via formula)</p>
-    <div class="flow">
-      <div class="flow-box" style="background:#e3f2fd;">Daily SLA check</div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-diamond">Days/SLA ≥ 75%?</div>
-      <div class="flow-arrow">→ Yes →</div>
-      <div class="flow-diamond">≥ 100%?</div>
-      <div class="flow-arrow">→ Yes →</div>
-      <div class="flow-diamond">≥ 125%?</div>
-      <div class="flow-arrow">→ Yes →</div>
-      <div class="flow-box" style="background:#c62828; color:white;">Auto-action</div>
+<section id="event-triggers">
+    <h2>2.13 Event Triggers Across Pipeline Stages</h2>
+
+    <p style="margin-bottom: 1rem;">Each pipeline stage transition is driven by a specific, observable event. These triggers were defined with the BD team based on real user behavior and mapped to available automation capabilities.</p>
+
+    <div class="table-wrapper">
+        <table>
+            <tr style="background: var(--navy); color: white;">
+                <th style="color: white;">Transition</th>
+                <th style="color: white;">Trigger Event</th>
+                <th style="color: white;">Detection Method</th>
+                <th style="color: white;">Automation</th>
+                <th style="color: white;">Secondary KPI</th>
+            </tr>
+            <tr>
+                <td><strong>Wishlist → Lead</strong></td>
+                <td>First brand response (email reply, LinkedIn, WhatsApp)</td>
+                <td>Gmail scan for brand-domain replies</td>
+                <td style="color: #f57f17;">Semi-auto</td>
+                <td>Response rate, time-to-first-response</td>
+            </tr>
+            <tr>
+                <td><strong>Lead → MQL</strong></td>
+                <td>First meeting scheduled (Google Calendar event with external attendees)</td>
+                <td>GCal scan — external attendee detection</td>
+                <td style="color: #2e7d32;"><strong>Auto-detectable ✅</strong></td>
+                <td>Meeting conversion rate, days lead-to-meeting</td>
+            </tr>
+            <tr>
+                <td><strong>MQL → SQL</strong></td>
+                <td>Deck preparation email sent to Kriti (design team)</td>
+                <td>Gmail scan for "deck" + Kriti's email</td>
+                <td style="color: #f57f17;">Semi-auto</td>
+                <td>Pitch prep cycle time</td>
+            </tr>
+            <tr>
+                <td><strong>SQL → Opportunity</strong></td>
+                <td>CEO approval given (verbal/Slack/email confirmation)</td>
+                <td>Slack message detection in BD channel</td>
+                <td style="color: #f57f17;">Semi-auto</td>
+                <td>CEO approval cycle time</td>
+            </tr>
+            <tr>
+                <td><strong>Opportunity → Signed</strong></td>
+                <td>Signed contract PDF uploaded (Google Drive or email attachment)</td>
+                <td>Drive scan for signed PDF in brand folder</td>
+                <td style="color: #f57f17;">Semi-auto</td>
+                <td>Negotiation duration, contract turnaround</td>
+            </tr>
+        </table>
     </div>
-    <table style="font-size:0.85rem;">
-      <tr><td style="width:120px;"><strong>75% SLA:</strong></td><td>Slack DM to deal owner: "⚠️ [Deal Name] has been in [Stage] for [X] days. SLA is [Y] days. Please action or update."</td></tr>
-      <tr><td><strong>100% SLA:</strong></td><td>Slack DM to deal owner + alert to BD Lead in #bd-pipeline: "🚨 [Deal Name] has BREACHED SLA in [Stage]."</td></tr>
-      <tr><td><strong>125% SLA:</strong></td><td>Auto-action per stage rules (e.g., Connect → auto-reject; Lead → auto-On Hold; SQL+ → escalate to leadership)</td></tr>
-    </table>
-  </div>
 
-  <!-- WF-05 -->
-  <div class="auto-card">
-    <h4>
-      <span>WF-05: Deal Owner Reassignment</span>
-      <span class="pill pill-p1">P1</span>
-    </h4>
-    <p style="font-size:0.85rem; margin:0.5rem 0;"><strong>Trigger:</strong> Stage transition to ownership-transfer stage (Signed) OR manual reassignment</p>
-    <table style="font-size:0.85rem;">
-      <tr><td style="width:120px;"><strong>Steps:</strong></td><td>1. System detects ownership transfer trigger → 2. Update Primary Owner field → 3. Log change in Activity Log → 4. Notify outgoing owner ("you've been transitioned off") → 5. Notify incoming owner ("you now own [Deal]") with deal summary → 6. Ensure incoming owner has access to all deal documents</td></tr>
-    </table>
-  </div>
-
-  <!-- WF-06 -->
-  <div class="auto-card">
-    <h4>
-      <span>WF-06: Revenue Potential Update</span>
-      <span class="pill pill-p1">P1</span>
-    </h4>
-    <p style="font-size:0.85rem; margin:0.5rem 0;"><strong>Trigger:</strong> Deal reaches MQL OR brand data is updated</p>
-    <table style="font-size:0.85rem;">
-      <tr><td style="width:120px;"><strong>Steps:</strong></td><td>1. Claude analyzes brand category, market size, channel presence, comparable brands in portfolio → 2. Estimates revenue range (low/mid/high) → 3. Assigns confidence score (Low/Medium/High) → 4. Updates Revenue Potential and Revenue Confidence fields → 5. Calculates Weighted Revenue based on stage probability → 6. Logs estimate in Activity Log for audit</td></tr>
-      <tr><td><strong>Note:</strong></td><td>Revenue estimates are always ranges, never single numbers. Human override is always allowed and logged.</td></tr>
-    </table>
-  </div>
-
-  <!-- WF-07 -->
-  <div class="auto-card">
-    <h4>
-      <span>WF-07: Red Flag Detection & Alert</span>
-      <span class="pill pill-p1">P1</span>
-    </h4>
-    <p style="font-size:0.85rem; margin:0.5rem 0;"><strong>Trigger:</strong> Deal created or deal details updated</p>
-    <table style="font-size:0.85rem;">
-      <tr><td style="width:120px;"><strong>Steps:</strong></td><td>1. Claude scans deal and brand data against rejection criteria → 2. If match found: add Red Flag tag(s) to deal → 3. If critical flag: block advancement past MQL + alert BD Lead → 4. If non-critical: add warning but allow advancement → 5. Log detection in Activity Log</td></tr>
-      <tr><td><strong>Criteria:</strong></td><td>Distributor conflict (critical), Low margin (critical), Financial instability (warning), Incompatible business model (critical), Regulatory risk (warning)</td></tr>
-    </table>
-  </div>
-
-  <!-- WF-08 to WF-10 collapsed -->
-  <details>
-    <summary>WF-08: Weekly Pipeline Report Generation &nbsp;<span class="pill pill-p1">P1</span></summary>
-    <div style="padding:0.5rem 0;">
-      <p style="font-size:0.85rem;"><strong>Trigger:</strong> Scheduled — every Monday 8:00 AM</p>
-      <p style="font-size:0.85rem;"><strong>Steps:</strong> Claude queries all active deals → calculates stage distribution, SLA compliance %, revenue forecast, top 5 deals by value, deals needing attention → generates formatted digest → sends via Slack #bd-pipeline and email to leadership</p>
+    <div class="callout">
+        <strong>Key insight from user research:</strong> BD team members are already creating Google Calendar events for brand meetings. This makes Lead → MQL the most reliably auto-detectable transition — the calendar event IS the signal, no behavior change required from the team.
     </div>
-  </details>
+</section>
 
-  <details>
-    <summary>WF-09: On-Hold Deal Revival Check &nbsp;<span class="pill pill-p1">P1</span></summary>
-    <div style="padding:0.5rem 0;">
-      <p style="font-size:0.85rem;"><strong>Trigger:</strong> Daily check — compare today's date to Revival Date on all On-Hold deals</p>
-      <p style="font-size:0.85rem;"><strong>Steps:</strong> If Revival Date = today → Slack DM to original deal owner: "⏰ [Deal Name] revival date is today. Please review and re-engage or extend hold." → If no action in 7 days → escalate to BD Lead</p>
+<section id="gcal-automation">
+    <h2>2.14 GCal Brand Meeting Detector (Live)</h2>
+
+    <p style="margin-bottom: 1rem;">The first production automation: a scheduled task that scans Google Calendar for brand meetings and posts matches to Slack for human approval before updating Notion.</p>
+
+    <h4>How It Works</h4>
+    <div class="table-wrapper">
+        <table>
+            <tr style="background: var(--navy); color: white;">
+                <th style="color: white;">Step</th>
+                <th style="color: white;">Action</th>
+                <th style="color: white;">Tool</th>
+            </tr>
+            <tr>
+                <td><strong>1. Detect</strong></td>
+                <td>Scan next-day calendar events for external attendees (non-opptra.com, non-oppdoor.com, non-3st.com, non-3s.capital, non-exporio.com domains)</td>
+                <td>Google Calendar MCP</td>
+            </tr>
+            <tr>
+                <td><strong>2. Match</strong></td>
+                <td>Cross-reference external attendees against Notion BD Pipeline brands. Categorize as: new Lead→MQL candidate, already progressed, or no match found.</td>
+                <td>Notion MCP (semantic search)</td>
+            </tr>
+            <tr>
+                <td><strong>3. Notify</strong></td>
+                <td>Post structured message to Slack #ai-softlines with: brand name, meeting time, attendees, current pipeline stage, proposed action.</td>
+                <td>Slack MCP</td>
+            </tr>
+            <tr>
+                <td><strong>4. Approve</strong></td>
+                <td>Human reviews in Slack. ✅ reaction = approve stage change. ❌ = reject. No reaction = no action taken.</td>
+                <td>Human (Slack)</td>
+            </tr>
+            <tr>
+                <td><strong>5. Update</strong></td>
+                <td>On approval: update Status to MQL, reset Stage Entry Date, log activity. (Future phase — currently step 4 is terminal.)</td>
+                <td>Notion MCP</td>
+            </tr>
+        </table>
     </div>
-  </details>
 
-  <details>
-    <summary>WF-10: Work Deduplication Check &nbsp;<span class="pill pill-p1">P1</span></summary>
-    <div style="padding:0.5rem 0;">
-      <p style="font-size:0.85rem;"><strong>Trigger:</strong> New deal creation OR document upload</p>
-      <p style="font-size:0.85rem;"><strong>Steps:</strong> Claude checks Brands DB for existing analyses, scouting reports, decks for the same brand → if found, links existing documents to new deal and notifies owner: "📎 Existing materials found for [Brand] — linked to your deal."</p>
+    <h4>Schedule &amp; Configuration</h4>
+    <ul>
+        <li><strong>Runs:</strong> Sunday–Thursday at 9:00 PM GST (scans next business day)</li>
+        <li><strong>Slack channel:</strong> #ai-softlines (C0AT8KXNQKS)</li>
+        <li><strong>Internal domains excluded:</strong> opptra.com, oppdoor.com, 3st.com, 3s.capital, exporio.com</li>
+        <li><strong>Status:</strong> Deployed, pending first manual run to pre-approve tool permissions</li>
+    </ul>
+</section>
+
+<section id="hitl-architecture">
+    <h2>2.15 Automation Architecture &amp; HITL Workflow</h2>
+
+    <p style="margin-bottom: 1rem;">All automations follow the same 4-step human-in-the-loop pattern. This ensures no pipeline data is modified without team oversight.</p>
+
+    <h4>Automation Readiness by Stage Transition</h4>
+    <div class="table-wrapper">
+        <table>
+            <tr style="background: var(--navy); color: white;">
+                <th style="color: white;">Category</th>
+                <th style="color: white;">Transitions</th>
+                <th style="color: white;">Status</th>
+            </tr>
+            <tr style="background: #e8f5e9;">
+                <td><strong>Auto-detectable</strong></td>
+                <td>Lead → MQL (GCal external attendee detection)</td>
+                <td>Live — scheduled task deployed</td>
+            </tr>
+            <tr>
+                <td><strong>Semi-auto (planned)</strong></td>
+                <td>Wishlist → Lead (Gmail reply scan), MQL → SQL (deck email to Kriti), SQL → Opportunity (CEO Slack approval), Opportunity → Signed (signed PDF in Drive)</td>
+                <td>Event triggers defined, automation not yet built</td>
+            </tr>
+        </table>
     </div>
-  </details>
-</div>
 
-<!-- 2.6 CLAUDE AI AUTOMATIONS -->
-<div class="section" id="prd-auto">
-  <h2>2.6 &nbsp; Claude AI Automation Specifications</h2>
+    <h4>HITL Guardrails</h4>
+    <ul>
+        <li><strong>No silent writes:</strong> Every detected event posts to Slack before any Notion update</li>
+        <li><strong>Approval required:</strong> Human must react ✅ in Slack to authorize pipeline changes</li>
+        <li><strong>Rejection path:</strong> ❌ reaction logs the rejection, no pipeline change made</li>
+        <li><strong>Timeout:</strong> No reaction within 24 hours = no action (logged as "no response")</li>
+        <li><strong>Audit trail:</strong> All detections, approvals, and rejections logged in Slack history</li>
+        <li><strong>Graduation path:</strong> After 2+ weeks of validated accuracy, proven automations can graduate to auto-execute with post-hoc notification (Phase 2)</li>
+    </ul>
+</section>
 
-  <div class="auto-card">
-    <h4><span><span class="req-id">AUTO-001</span> &nbsp; Gmail Lead Detection</span> <span class="pill pill-p0">P0</span></h4>
-    <table style="font-size:0.85rem;">
-      <tr><td style="width:140px;"><strong>Trigger</strong></td><td>New email in BD inbox from brand-related sender or containing brand inquiry keywords</td></tr>
-      <tr><td><strong>Input</strong></td><td>Email subject, body, sender name/domain, thread history</td></tr>
-      <tr><td><strong>Processing</strong></td><td>Claude classifies intent (inquiry / follow-up / irrelevant), extracts brand name, contact info, opportunity details, urgency signals</td></tr>
-      <tr><td><strong>Output (>80% conf.)</strong></td><td>New Deal record in Notion (Connect stage) + email thread linked + Slack notification to BD team</td></tr>
-      <tr><td><strong>Output (<80% conf.)</strong></td><td>Flag for manual review → Slack DM to BD lead: "📧 Possible new lead from [sender] — needs review"</td></tr>
-      <tr><td><strong>Error handling</strong></td><td>If Notion API fails, retry 3x then alert BD lead. If email parsing fails, log error and flag for manual review.</td></tr>
-    </table>
-  </div>
+<section id="prd-phase2">
+    <h2>2.16 Phase 2 Enhancements (Weeks 3-4)</h2>
 
-  <div class="auto-card">
-    <h4><span><span class="req-id">AUTO-002</span> &nbsp; Slack Commitment Capture</span> <span class="pill pill-p0">P0</span></h4>
-    <table style="font-size:0.85rem;">
-      <tr><td style="width:140px;"><strong>Trigger</strong></td><td>Slack message in BD channels containing commitment language (e.g., "we'll send them…", "agreed to…", "committed to…", "promised…")</td></tr>
-      <tr><td><strong>Input</strong></td><td>Message text, channel, sender, thread context, mentioned deal/brand names</td></tr>
-      <tr><td><strong>Processing</strong></td><td>Claude identifies: commitment/action item, deadline (explicit or implied), responsible party, related deal</td></tr>
-      <tr><td><strong>Output</strong></td><td>Update deal's Notes field with commitment text + set Next Action and Next Action Due + DM deal owner confirmation</td></tr>
-      <tr><td><strong>Confidence gate</strong></td><td>If deal match is ambiguous, ask in thread: "Did you mean [Deal A] or [Deal B]?"</td></tr>
-    </table>
-  </div>
+    <p style="margin-bottom: 1.5rem;">Once the team is comfortable with the unified single-table workflow, introduce these linked database enhancements to add advanced capabilities:</p>
 
-  <div class="auto-card">
-    <h4><span><span class="req-id">AUTO-003</span> &nbsp; SLA Monitor</span> <span class="pill pill-p0">P0</span></h4>
-    <table style="font-size:0.85rem;">
-      <tr><td style="width:140px;"><strong>Trigger</strong></td><td>Daily scheduled run (6:00 AM) + real-time on stage entry</td></tr>
-      <tr><td><strong>Input</strong></td><td>All active deals: Stage, Stage Entry Date, SLA Limit</td></tr>
-      <tr><td><strong>Processing</strong></td><td>Calculate Days in Stage / SLA Limit ratio for each deal</td></tr>
-      <tr><td><strong>Thresholds</strong></td><td>75%: Warning DM → 100%: Alert DM + channel → 125%: Auto-action (per stage rules)</td></tr>
-      <tr><td><strong>De-duplication</strong></td><td>Only send each alert level once per deal (don't re-alert daily for same threshold)</td></tr>
-    </table>
-  </div>
+    <h4>1. Dedicated Activity Log Database</h4>
+    <p>As the core system stabilizes, introduce a linked Activity Log database for formal audit trails. Benefits:</p>
+    <ul>
+        <li>Timestamped stage change history with clear before/after states</li>
+        <li>Actor attribution for every update (who changed what, when)</li>
+        <li>SLA breach event logging for compliance reporting</li>
+        <li>Compliance-ready audit records that survive deal page deletions</li>
+    </ul>
+    <p><strong>Implementation:</strong> Link each BD Pipeline row to an Activity Log; Claude updates both on every stage change or significant event.</p>
 
-  <div class="auto-card">
-    <h4><span><span class="req-id">AUTO-004</span> &nbsp; Revenue Potential Calculator</span> <span class="pill pill-p1">P1</span></h4>
-    <table style="font-size:0.85rem;">
-      <tr><td style="width:140px;"><strong>Trigger</strong></td><td>Deal reaches MQL stage OR brand data updated in Brands DB</td></tr>
-      <tr><td><strong>Input</strong></td><td>Brand category, market size data, channel presence, comparable brands in Opptra portfolio, deal terms (if available)</td></tr>
-      <tr><td><strong>Processing</strong></td><td>Claude estimates annual revenue potential using: category benchmarks, market penetration rates, comparable brand performance</td></tr>
-      <tr><td><strong>Output</strong></td><td>Revenue Potential (range), Revenue Confidence (Low/Med/High), calculation rationale in Activity Log</td></tr>
-      <tr><td><strong>Override</strong></td><td>Human can always override with manual estimate — logged as "Manual Override" in Activity Log</td></tr>
-    </table>
-  </div>
+    <h4>2. Contacts Database</h4>
+    <p>As the brand network grows beyond 200+ contacts, split contacts into a dedicated relational database. Benefits:</p>
+    <ul>
+        <li>One contact linked to multiple brand-geo deals</li>
+        <li>Relationship status tracking (New → Warm → Champion)</li>
+        <li>Contact-level activity history and communication preferences</li>
+        <li>Ability to see all deals a contact is involved in</li>
+    </ul>
+    <p><strong>Implementation:</strong> Create a Contacts DB linked bidirectionally to BD Pipeline. Move Brand Owner and Brand Contact fields to relation references.</p>
 
-  <div class="auto-card">
-    <h4><span><span class="req-id">AUTO-005</span> &nbsp; Red Flag Detector</span> <span class="pill pill-p1">P1</span></h4>
-    <table style="font-size:0.85rem;">
-      <tr><td style="width:140px;"><strong>Trigger</strong></td><td>Deal created OR deal/brand details updated</td></tr>
-      <tr><td><strong>Input</strong></td><td>Brand financials, current distributors, proposed terms, business model, regulatory status</td></tr>
-      <tr><td><strong>Processing</strong></td><td>Claude screens against configurable rejection criteria (see Business Rules BR-108)</td></tr>
-      <tr><td><strong>Output (critical)</strong></td><td>Red Flag tag added + advancement blocked past MQL + Slack alert to BD Lead</td></tr>
-      <tr><td><strong>Output (warning)</strong></td><td>Red Flag tag added + warning note on deal + no block</td></tr>
-    </table>
-  </div>
+    <h4>3. Documents & Knowledge Base Database</h4>
+    <p>Create a linked Documents database for brand analyses, pitch decks, scouting reports, and proposals. Benefits:</p>
+    <ul>
+        <li>Prevents duplication when the same brand is pursued across multiple geos</li>
+        <li>Creates a searchable knowledge base of all brand research</li>
+        <li>One document linked to multiple deals</li>
+        <li>Audit trail of document edits and versions</li>
+    </ul>
+    <p><strong>Implementation:</strong> Create a Documents DB with brand-level grouping; link to both Contacts and BD Pipeline rows.</p>
 
-  <div class="auto-card">
-    <h4><span><span class="req-id">AUTO-006</span> &nbsp; Stakeholder Update Broadcaster</span> <span class="pill pill-p0">P0</span></h4>
-    <table style="font-size:0.85rem;">
-      <tr><td style="width:140px;"><strong>Trigger</strong></td><td>Stage transition, significant deal update, SLA breach, deal signed</td></tr>
-      <tr><td><strong>Input</strong></td><td>Deal details, event type, RACI matrix, stakeholder contact info</td></tr>
-      <tr><td><strong>Processing</strong></td><td>Claude generates contextual summary of the event, identifies who needs to know per RACI</td></tr>
-      <tr><td><strong>Output</strong></td><td>Slack notification to appropriate channel/DM + email if configured for that stakeholder</td></tr>
-      <tr><td><strong>Templates</strong></td><td>Stage advance: "🎯 [Deal] moved to [Stage] by [Actor]. Next: [Action]." | SLA: "⚠️ [Deal] SLA warning..." | Signed: "🎉 [Deal] is SIGNED!"</td></tr>
-    </table>
-  </div>
+    <h4>4. Advanced Claude Automations (HITL Graduation)</h4>
+    <p>Graduate proven HITL automations from "notify → approve → update" to "auto-execute → notify" after 2+ weeks of validated accuracy. The GCal brand meeting detector (section 2.14) is the first candidate for graduation.</p>
+    <ul>
+        <li><strong>Auto-stage advancement:</strong> Graduate Lead→MQL from HITL to auto-execute once approval rate exceeds 95% for 2 consecutive weeks</li>
+        <li><strong>Auto-revenue calculation:</strong> Auto-update revenue estimates when brand data changes</li>
+        <li><strong>Auto-rejection:</strong> For clear red flags, auto-reject deals with reason code (with manual override option)</li>
+        <li><strong>Auto-outreach:</strong> Generate draft emails/templates for outreach based on deal profile and stage</li>
+        <li><strong>Remaining semi-auto triggers:</strong> Build Gmail reply scan (Wishlist→Lead), deck email detection (MQL→SQL), CEO approval capture (SQL→Opp), signed PDF detection (Opp→Signed)</li>
+    </ul>
+    <p><strong>Safety gate:</strong> Only enable after 2+ weeks of validated accuracy in HITL mode and explicit team approval. Each transition graduates independently.</p>
 
-  <div class="auto-card">
-    <h4><span><span class="req-id">AUTO-007</span> &nbsp; Duplicate Detection</span> <span class="pill pill-p1">P1</span></h4>
-    <table style="font-size:0.85rem;">
-      <tr><td style="width:140px;"><strong>Trigger</strong></td><td>New deal creation (manual or auto)</td></tr>
-      <tr><td><strong>Input</strong></td><td>Brand name, contact email/name</td></tr>
-      <tr><td><strong>Processing</strong></td><td>Fuzzy match against existing Deals and Brands databases (Levenshtein distance ≤ 2 for names, exact match for emails)</td></tr>
-      <tr><td><strong>Output (match)</strong></td><td>Warning: "⚠️ Possible duplicate — [Existing Deal] matches. [Link]" → block auto-create, flag for human decision</td></tr>
-      <tr><td><strong>Output (no match)</strong></td><td>Proceed with creation</td></tr>
-    </table>
-  </div>
-</div>
+    <h4>5. Dashboard Views & Reporting</h4>
+    <p>Build advanced Notion views and reporting capabilities:</p>
+    <ul>
+        <li><strong>Pipeline Board:</strong> Kanban view grouped by stage with drag-to-advance</li>
+        <li><strong>Revenue Forecast:</strong> Weighted pipeline by quarter with scenario modeling</li>
+        <li><strong>SLA Heatmap:</strong> Color-coded compliance matrix (red = breached, yellow = warning, green = on track)</li>
+        <li><strong>Team Workload:</strong> Deals per owner, average cycle time, SLA compliance per person</li>
+        <li><strong>Automated digests:</strong> Generate weekly, monthly, and quarterly summaries with trend analysis</li>
+    </ul>
 
-<!-- 2.7 NOTIFICATION MATRIX -->
-<div class="section" id="prd-notify">
-  <h2>2.7 &nbsp; Notification & Alert Matrix</h2>
-  <table>
-    <thead><tr><th>Event</th><th>Recipients</th><th>Channel</th><th>Urgency</th><th>Message Template</th></tr></thead>
-    <tbody>
-      <tr><td>New lead created (auto)</td><td>BD Team</td><td>Slack #bd-pipeline</td><td><span class="pill pill-p2">Info</span></td><td>"📧 New lead: [Brand] from [Source]. Owner: [Name]. [Link]"</td></tr>
-      <tr><td>Stage advanced</td><td>Per RACI (I + C for new stage)</td><td>Slack #bd-pipeline + DMs</td><td><span class="pill pill-p2">Info</span></td><td>"🎯 [Deal] → [New Stage] by [Actor]. Next: [Action]"</td></tr>
-      <tr><td>Stage regressed</td><td>BD Lead + deal owner</td><td>Slack DM</td><td><span class="pill pill-p1">Warning</span></td><td>"⬇️ [Deal] moved back to [Stage]. Reason: [reason]"</td></tr>
-      <tr><td>SLA 75% warning</td><td>Deal owner</td><td>Slack DM</td><td><span class="pill pill-p1">Warning</span></td><td>"⚠️ [Deal] at [X] days in [Stage] (SLA: [Y] days). Please action."</td></tr>
-      <tr><td>SLA 100% breach</td><td>Deal owner + BD Lead</td><td>Slack DM + #bd-pipeline</td><td><span class="pill pill-p0">Urgent</span></td><td>"🚨 SLA BREACHED: [Deal] at [X] days in [Stage]"</td></tr>
-      <tr><td>Red flag detected</td><td>BD Lead</td><td>Slack DM + deal record</td><td><span class="pill pill-p0">Urgent</span></td><td>"🚩 Red flag on [Deal]: [Flag type]. [Details]"</td></tr>
-      <tr><td>Deal rejected</td><td>All RACI stakeholders</td><td>Slack #bd-pipeline</td><td><span class="pill pill-p2">Info</span></td><td>"✕ [Deal] rejected. Reason: [code]. [Link to deal]"</td></tr>
-      <tr><td>Deal signed</td><td>All teams</td><td>Slack #wins + email</td><td><span class="pill pill-p2">Celebrate</span></td><td>"🎉 [Deal] SIGNED! Revenue: $[X]. Owner → Brand Team."</td></tr>
-      <tr><td>Ownership transferred</td><td>Outgoing + incoming owner</td><td>Slack DM</td><td><span class="pill pill-p2">Info</span></td><td>"🔄 [Deal] ownership → [New Owner]. [Deal summary link]"</td></tr>
-      <tr><td>Commitment captured</td><td>Deal owner + Brand Team</td><td>Slack DM + deal record</td><td><span class="pill pill-p2">Info</span></td><td>"📝 Commitment captured: '[text]' for [Deal]. Due: [date]"</td></tr>
-      <tr><td>On-hold revival due</td><td>Original deal owner</td><td>Slack DM</td><td><span class="pill pill-p1">Action</span></td><td>"⏰ Revival date for [Deal]. Re-engage or extend hold."</td></tr>
-      <tr><td>Weekly digest</td><td>Leadership + BD</td><td>Email + Slack</td><td><span class="pill pill-p2">Scheduled</span></td><td>Formatted pipeline summary (see WF-08)</td></tr>
-      <tr><td>Duplicate detected</td><td>Deal creator</td><td>Slack DM</td><td><span class="pill pill-p1">Warning</span></td><td>"⚠️ Possible duplicate: [New] matches [Existing]. [Link]"</td></tr>
-    </tbody>
-  </table>
-</div>
+    <h4>6. Slack & Gmail Deep Integration</h4>
+    <p>Enhance real-time deal updates and communication:</p>
+    <ul>
+        <li><strong>Email thread linking:</strong> Auto-link email threads to brand pages, detect mentions, show deal context in email</li>
+        <li><strong>Slack commitments:</strong> Capture Slack commitments as deal notes and set reminders</li>
+        <li><strong>Pipeline broadcasts:</strong> Auto-post stage transitions to #bd-pipeline channel with stakeholder pings</li>
+        <li><strong>Daily standup:</strong> Generate daily standups from overnight changes and upcoming deadlines</li>
+    </ul>
+</section>
 
-<!-- 2.8 DASHBOARD & REPORTING -->
-<div class="section" id="prd-dash">
-  <h2>2.8 &nbsp; Dashboard & Reporting Requirements</h2>
+<section>
+    <h2>Integration & Data Updates</h2>
+    <h3>Updated BR-308</h3>
+    <p>Single unified database eliminates need for cross-database sync, ensuring consistency and preventing data silos.</p>
+    
+    <h3>Updated Integration Specs (2.9)</h3>
+    <p>Removed bidirectional sync requirement between separate Deals and Brands databases. All data is now stored in a single BD Pipeline table, eliminating the need for cross-database synchronization.</p>
 
-  <h3>Notion Views to Create</h3>
-  <table>
-    <thead><tr><th>View Name</th><th>Type</th><th>Filters</th><th>Sort</th><th>Audience</th></tr></thead>
-    <tbody>
-      <tr><td><strong>Pipeline Board</strong></td><td>Board (by Stage)</td><td>Exclude Rejected & On Hold</td><td>Days in Stage (desc)</td><td>All</td></tr>
-      <tr><td><strong>My Deals</strong></td><td>Table</td><td>Owner = current user</td><td>SLA Status → Next Action Due</td><td>Individual</td></tr>
-      <tr><td><strong>SLA Watchlist</strong></td><td>Table</td><td>SLA Status = Warning or Breached</td><td>SLA % (desc)</td><td>BD Team + Lead</td></tr>
-      <tr><td><strong>Revenue Forecast</strong></td><td>Table</td><td>Stage ≥ MQL, not Rejected</td><td>Weighted Revenue (desc)</td><td>Leadership</td></tr>
-      <tr><td><strong>Rejected Archive</strong></td><td>Table</td><td>Stage = Rejected</td><td>Rejection date (desc)</td><td>BD Lead</td></tr>
-      <tr><td><strong>On Hold / Revival</strong></td><td>Table</td><td>Stage = On Hold</td><td>Revival Date (asc)</td><td>BD Team</td></tr>
-      <tr><td><strong>Recent Activity</strong></td><td>Table (Activity Log)</td><td>Last 7 days</td><td>Timestamp (desc)</td><td>All</td></tr>
-      <tr><td><strong>Red Flag Deals</strong></td><td>Table</td><td>Red Flags is not empty</td><td>Stage → Red Flag severity</td><td>BD Lead</td></tr>
-    </tbody>
-  </table>
-
-  <h3 style="margin-top:1.5rem;">Weekly Pipeline Digest Contents</h3>
-  <table>
-    <tr><td style="width:200px;"><strong>Pipeline Summary</strong></td><td>Deal count per stage, total active deals, new deals this week, deals closed/rejected</td></tr>
-    <tr><td><strong>Revenue Snapshot</strong></td><td>Total weighted pipeline value, change vs. last week, top 5 deals by value</td></tr>
-    <tr><td><strong>SLA Compliance</strong></td><td>% of deals within SLA, count of warnings/breaches, worst offenders</td></tr>
-    <tr><td><strong>Deals Needing Attention</strong></td><td>SLA breached, red-flagged, no activity in 7+ days</td></tr>
-    <tr><td><strong>Rejection Analysis</strong></td><td>Deals rejected this week, reason code distribution</td></tr>
-    <tr><td><strong>Team Workload</strong></td><td>Active deals per owner, SLA compliance per owner</td></tr>
-  </table>
-</div>
-
-<!-- 2.9 INTEGRATION SPECS -->
-<div class="section" id="prd-integ">
-  <h2>2.9 &nbsp; Integration Specifications</h2>
-
-  <table>
-    <thead><tr><th>Integration</th><th>Direction</th><th>Method</th><th>Frequency</th><th>Data Mapping</th></tr></thead>
-    <tbody>
-      <tr>
-        <td><strong>Gmail → Notion</strong></td>
-        <td>Inbound</td>
-        <td>Gmail API → Claude (parse) → Notion API (create/update)</td>
-        <td>Near real-time (polling every 5 min or webhook)</td>
-        <td>Email sender → Contact; Subject/body → Deal name, notes; Thread URL → Gmail Thread Links field</td>
-      </tr>
-      <tr>
-        <td><strong>Slack → Notion</strong></td>
-        <td>Inbound</td>
-        <td>Slack Events API → Claude (parse) → Notion API (update)</td>
-        <td>Real-time (event-driven)</td>
-        <td>Message text → Notes/commitments; Sender → Actor; Thread URL → Slack Thread Links field</td>
-      </tr>
-      <tr>
-        <td><strong>Notion → Slack</strong></td>
-        <td>Outbound</td>
-        <td>Notion webhook (on property change) → Claude (format) → Slack API (post)</td>
-        <td>Real-time (event-driven)</td>
-        <td>Stage change → notification; SLA breach → alert; Deal signed → celebration</td>
-      </tr>
-      <tr>
-        <td><strong>Notion → Email</strong></td>
-        <td>Outbound</td>
-        <td>Scheduled task → Claude (generate digest) → Gmail API (send)</td>
-        <td>Weekly (Monday 8AM) + critical events</td>
-        <td>Pipeline data → formatted HTML email digest</td>
-      </tr>
-      <tr>
-        <td><strong>Google Sheets → Notion</strong></td>
-        <td>One-time migration</td>
-        <td>CSV export → field mapping → Notion API (bulk create)</td>
-        <td>Day 2 of implementation</td>
-        <td>GSheets columns → Notion fields (mapping document required)</td>
-      </tr>
-      <!-- Removed: Deals DB ↔ Brands DB row — no longer needed with unified single-table architecture -->
-    </tbody>
-  </table>
-</div>
-
-<!-- 2.10 SECURITY & ACCESS -->
-<div class="section" id="prd-security">
-  <h2>2.10 &nbsp; Security & Access Control</h2>
-  <table>
-    <thead><tr><th>Role</th><th>View Deals</th><th>Create Deals</th><th>Edit Own Deals</th><th>Edit All Deals</th><th>Change Stage</th><th>Delete/Reject</th><th>Configure System</th></tr></thead>
-    <tbody>
-      <tr><td><strong>BD Admin</strong></td><td>✓ All</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td></tr>
-      <tr><td><strong>BD User</strong></td><td>✓ All</td><td>✓</td><td>✓</td><td>—</td><td>✓ Own</td><td>✓ Own (with reason)</td><td>—</td></tr>
-      <tr><td><strong>Brand Team</strong></td><td>✓ SQL+</td><td>—</td><td>✓ Signed+</td><td>—</td><td>✓ Signed+</td><td>—</td><td>—</td></tr>
-      <tr><td><strong>Central Support</strong></td><td>✓ Tagged deals</td><td>—</td><td>✓ Notes only</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
-      <tr><td><strong>Leadership</strong></td><td>✓ All (read-only)</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
-    </tbody>
-  </table>
-
-  <div class="callout" style="margin-top:1rem;">
-    <strong>Audit Trail:</strong> Every action (create, edit, stage change, delete) is logged in the Activity Log database with actor, timestamp, and details. This log is append-only — entries cannot be edited or deleted except by BD Admin.
-  </div>
-</div>
-
-<!-- 2.11 NON-FUNCTIONAL REQUIREMENTS -->
-<div class="section" id="prd-nfr">
-  <h2>2.11 &nbsp; Non-Functional Requirements</h2>
-  <table>
-    <thead><tr><th style="width:70px;">ID</th><th>Category</th><th>Requirement</th><th style="width:80px;">Target</th></tr></thead>
-    <tbody>
-      <tr><td><span class="req-id">NFR-01</span></td><td>Performance</td><td>Claude automations (lead detection, commitment capture) must execute within 5 minutes of trigger</td><td>&lt;5 min</td></tr>
-      <tr><td><span class="req-id">NFR-02</span></td><td>Performance</td><td>SLA notifications must be sent within 1 hour of threshold breach</td><td>&lt;1 hr</td></tr>
-      <tr><td><span class="req-id">NFR-03</span></td><td>Reliability</td><td>Automation pipeline uptime must exceed 95% (allowing for scheduled maintenance)</td><td>&gt;95%</td></tr>
-      <tr><td><span class="req-id">NFR-04</span></td><td>Reliability</td><td>Failed automations must retry 3x before alerting for manual intervention</td><td>3 retries</td></tr>
-      <tr><td><span class="req-id">NFR-05</span></td><td>Scalability</td><td>System must support growth to 500+ active deals without performance degradation</td><td>500+ deals</td></tr>
-      <tr><td><span class="req-id">NFR-06</span></td><td>Scalability</td><td>System must support growth to 15+ BD team members</td><td>15+ users</td></tr>
-      <tr><td><span class="req-id">NFR-07</span></td><td>Data Quality</td><td>AI-generated deal records must have &gt;80% field completeness</td><td>&gt;80%</td></tr>
-      <tr><td><span class="req-id">NFR-08</span></td><td>Backup</td><td>Notion data must be exportable on-demand for backup purposes</td><td>On-demand</td></tr>
-    </tbody>
-  </table>
-</div>
-
-<!-- 2.12 TESTING & VALIDATION -->
-<div class="section" id="prd-test">
-  <h2>2.12 &nbsp; Testing & Validation Plan</h2>
-
-  <h3>Test Scenarios</h3>
-  <table>
-    <thead><tr><th>Test ID</th><th>Scenario</th><th>Steps</th><th>Expected Result</th></tr></thead>
-    <tbody>
-      <tr><td><span class="req-id">T-01</span></td><td>Auto lead creation from Gmail</td><td>Send a brand inquiry email to BD inbox</td><td>Deal created in Notion at Connect stage within 5 min; email linked; BD notified via Slack</td></tr>
-      <tr><td><span class="req-id">T-02</span></td><td>Duplicate prevention</td><td>Send email from a brand that already has a deal</td><td>No new deal created; email linked to existing deal; warning sent to deal owner</td></tr>
-      <tr><td><span class="req-id">T-03</span></td><td>Stage advancement + notification</td><td>Move a deal from MQL → SQL</td><td>Activity log entry created; Brand Team and Central Team notified per RACI; SLA timer reset</td></tr>
-      <tr><td><span class="req-id">T-04</span></td><td>SLA warning</td><td>Create deal at Connect stage; wait for Day 10 (or simulate)</td><td>Slack DM sent to deal owner with warning message</td></tr>
-      <tr><td><span class="req-id">T-05</span></td><td>SLA breach auto-action</td><td>Leave Connect deal for 18 days (or simulate)</td><td>Deal auto-rejected with reason "No Response"; BD Lead notified</td></tr>
-      <tr><td><span class="req-id">T-06</span></td><td>Slack commitment capture</td><td>Post "We promised [Brand] we'd send the proposal by Friday" in BD channel</td><td>Deal notes updated with commitment; Next Action Due set to Friday; deal owner DM'd</td></tr>
-      <tr><td><span class="req-id">T-07</span></td><td>Rejection with reason code</td><td>Reject a deal at SQL stage</td><td>Reason code required and captured; deal archived; all RACI stakeholders notified</td></tr>
-      <tr><td><span class="req-id">T-08</span></td><td>Ownership transfer at Signed</td><td>Move deal from Opportunity → Signed</td><td>Owner auto-changes to Brand Team Lead; both parties notified; deal package accessible</td></tr>
-      <tr><td><span class="req-id">T-09</span></td><td>Red flag detection</td><td>Create deal for brand with known distributor conflict</td><td>Red flag tag added; BD Lead alerted; advancement past MQL blocked</td></tr>
-      <tr><td><span class="req-id">T-10</span></td><td>On-Hold revival</td><td>Put deal On Hold with revival date = today (simulate)</td><td>Slack DM sent to original deal owner reminding them to re-engage</td></tr>
-    </tbody>
-  </table>
-
-  <h3 style="margin-top:1.5rem;">Go / No-Go Criteria</h3>
-  <table>
-    <tr><th>Criterion</th><th>Threshold</th></tr>
-    <tr><td>All P0 automations operational</td><td>100% of P0 automations passing tests</td></tr>
-    <tr><td>Data migration complete</td><td>100% of active deals migrated and classified</td></tr>
-    <tr><td>Team trained</td><td>All 3 BD members completed training walkthrough</td></tr>
-    <tr><td>Core Notion views functional</td><td>Pipeline Board, My Deals, SLA Watchlist live</td></tr>
-    <tr><td>No critical bugs</td><td>0 P0 bugs outstanding</td></tr>
-  </table>
-</div>
-
-<!-- 2.13 PHASE 2 ENHANCEMENTS -->
-<div class="section" id="prd-phase2">
-  <h2>2.13 &nbsp; Phase 2 Enhancements (Weeks 3–4)</h2>
-  <p>Once the BD team is comfortable managing the unified single-table pipeline, the following enhancements can be layered in to add depth without disrupting daily workflows.</p>
-
-  <table class="field-table">
-    <thead><tr><th style="width:220px;">Enhancement</th><th>Description</th><th style="width:120px;">Priority</th></tr></thead>
-    <tbody>
-      <tr>
-        <td><strong>Activity Log Database</strong></td>
-        <td>Dedicated database to capture structured activity history (stage changes, emails linked, calls, notes). Linked to BD Pipeline via Relation. Enables timeline views and audit trails per brand.</td>
-        <td><span class="pill pill-should">Should</span></td>
-      </tr>
-      <tr>
-        <td><strong>Contacts Database</strong></td>
-        <td>Separate database for brand-side and consultant contacts. Fields: Name, Company, Role, Email, Phone, LinkedIn, Relationship Status. Linked to BD Pipeline via Relation for multi-contact support.</td>
-        <td><span class="pill pill-should">Should</span></td>
-      </tr>
-      <tr>
-        <td><strong>Documents Knowledge Base</strong></td>
-        <td>Centralized Notion database for all brand analyses, pitch decks, MOUs, and contracts. Tagged by brand, document type, and stage. Enables search and prevents rework across deals.</td>
-        <td><span class="pill pill-nice">Nice</span></td>
-      </tr>
-      <tr>
-        <td><strong>Advanced Claude Automations</strong></td>
-        <td>AI-powered workflows: auto-stage progression suggestions, SLA breach alerts, weekly pipeline digest generation, duplicate detection, and revenue confidence scoring.</td>
-        <td><span class="pill pill-should">Should</span></td>
-      </tr>
-      <tr>
-        <td><strong>Dashboard Views</strong></td>
-        <td>Pre-built Notion views: Pipeline Board (Kanban by Status), My Deals (filtered by BD Owner), SLA Watchlist (Breached + Warning), Revenue Forecast (grouped by Signed Timeline), and Geo Heatmap.</td>
-        <td><span class="pill pill-must">Must</span></td>
-      </tr>
-      <tr>
-        <td><strong>Slack Integration</strong></td>
-        <td>Slack bot that captures deal-related messages from BD channels and appends them as activity entries. Supports <code>/deal [brand]</code> quick-lookup command.</td>
-        <td><span class="pill pill-nice">Nice</span></td>
-      </tr>
-      <tr>
-        <td><strong>Gmail Integration</strong></td>
-        <td>Auto-detect brand-related email threads and link them to pipeline rows. Weekly email digest of pipeline status sent to BD leads and leadership.</td>
-        <td><span class="pill pill-nice">Nice</span></td>
-      </tr>
-    </tbody>
-  </table>
-
-  <div style="background:var(--opptra-yellow); border-left:4px solid var(--opptra-orange); padding:0.75rem 1rem; border-radius:0 8px 8px 0; margin-top:1rem;">
-    <strong style="color:var(--opptra-navy);">Migration Path:</strong> Phase 2 databases (Activity Log, Contacts) will be added alongside the existing BD Pipeline Database — not replacing it. Existing page-content activity logs and inline contact fields will be migrated to the new databases via Claude automation scripts, ensuring zero data loss and no disruption to the BD team's daily workflow.
-  </div>
-</div>
-
-<!-- APPENDIX -->
-<div class="section" id="appendix">
-  <h2>Appendix</h2>
-
-  <h3>A. Glossary</h3>
-  <table>
-    <tr><th style="width:180px;">Term</th><th>Definition</th></tr>
-    <tr><td><strong>Deal</strong></td><td>A potential brand partnership being pursued through the pipeline</td></tr>
-    <tr><td><strong>Stage</strong></td><td>A defined phase in the deal lifecycle (Connect → Launch)</td></tr>
-    <tr><td><strong>SLA</strong></td><td>Service Level Agreement — the maximum time a deal should remain in a stage</td></tr>
-    <tr><td><strong>MQL</strong></td><td>Marketing Qualified Lead — brand confirmed to have market fit</td></tr>
-    <tr><td><strong>SQL</strong></td><td>Sales Qualified Lead — brand confirmed to have commercial viability</td></tr>
-    <tr><td><strong>RACI</strong></td><td>Responsible, Accountable, Consulted, Informed — ownership matrix</td></tr>
-    <tr><td><strong>Red Flag</strong></td><td>A deal attribute that matches pre-defined rejection criteria</td></tr>
-    <tr><td><strong>Revival Date</strong></td><td>The date when an On-Hold deal should be reassessed</td></tr>
-    <tr><td><strong>Weighted Revenue</strong></td><td>Revenue Potential × Stage Probability — used for pipeline forecasting</td></tr>
-  </table>
-
-  <h3 style="margin-top:1.5rem;">B. Stage Quick Reference</h3>
-  <table>
-    <thead><tr><th>Stage</th><th>SLA</th><th>Owner</th><th>Key Exit Criteria</th></tr></thead>
-    <tbody>
-      <tr><td style="color:#4a148c; font-weight:700;">Connect</td><td>14 days</td><td>BD</td><td>Brand responds + meeting scheduled</td></tr>
-      <tr><td style="color:#1a237e; font-weight:700;">Lead</td><td>21 days</td><td>BD</td><td>Enough info to assess qualification</td></tr>
-      <tr><td style="color:#0d47a1; font-weight:700;">MQL</td><td>14 days</td><td>BD</td><td>Commercial discussion initiated + revenue estimated</td></tr>
-      <tr><td style="color:#006064; font-weight:700;">SQL</td><td>21 days</td><td>BD Lead</td><td>Proposal shared + CEO clearance obtained</td></tr>
-      <tr><td style="color:#1b5e20; font-weight:700;">Opportunity</td><td>30 days</td><td>BD Lead</td><td>Agreement signed</td></tr>
-      <tr><td style="color:#e65100; font-weight:700;">Signed</td><td>14 days</td><td>Brand Team</td><td>Launch plan created + onboarding initiated</td></tr>
-      <tr><td style="color:var(--opptra-orange); font-weight:700;">Launch</td><td>—</td><td>Brand Team</td><td>Terminal — brand is live</td></tr>
-    </tbody>
-  </table>
-
-  <h3 style="margin-top:1.5rem;">C. Rejection Criteria Checklist</h3>
-  <table>
-    <thead><tr><th>Criterion</th><th>Type</th><th>Check Method</th></tr></thead>
-    <tbody>
-      <tr><td>Existing distributor that Opptra cannot displace</td><td>Critical — auto-reject recommendation</td><td>Brand research / web search</td></tr>
-      <tr><td>Gross margin below threshold</td><td>Critical — block at MQL</td><td>Terms discussion / financials</td></tr>
-      <tr><td>Brand financial instability</td><td>Warning — require BD Lead review</td><td>Public financials / credit check</td></tr>
-      <tr><td>DTC-only business model (no wholesale)</td><td>Critical — auto-reject recommendation</td><td>Brand website / channel analysis</td></tr>
-      <tr><td>Regulatory risk in target market</td><td>Warning — require Legal review</td><td>Regulatory database check</td></tr>
-      <tr><td>Brand reputation risk</td><td>Warning — require BD Lead review</td><td>Media/social monitoring</td></tr>
-      <tr><td>No response after 3+ follow-ups (Connect stage)</td><td>Critical — auto-reject at SLA</td><td>Email tracking</td></tr>
-    </tbody>
-  </table>
-</div>
-
-<!-- FOOTER -->
-<div style="text-align:center; padding:2rem; color:#999; font-size:0.8rem; border-top:1px solid #eee; margin-top:2rem;">
-  <img src="https://cdn.prod.website-files.com/67a44396c211269f785f9dfe/67a4a8650573be9ae072ae9e_Opptra-logo.svg" alt="Opptra" style="height:24px; opacity:0.5; margin-bottom:0.5rem;"><br>
-  Opptra BD Command Center — BRD & PRD v1.0<br>
-  Confidential — April 2026
-</div>
+    <h3>Implementation Timeline (Actual Progress)</h3>
+    <p><strong>Day 1 ✅:</strong> Created BD Pipeline database with unified schema — 5 views, 3 formula properties, all fields configured via Notion API</p>
+    <p><strong>Day 2 ✅:</strong> Backfilled 100+ deals — Signed Timeline, Y1/Y3 revenue, Stage Entry Dates populated from SL_BD_Master spreadsheet</p>
+    <p><strong>Day 3 ✅:</strong> Calibrated 90-day SLA model (dual-track INT 32d / EXT 58d), defined event triggers with BD team, created Slack channel, built SLA benchmark page</p>
+    <p><strong>Day 4 ⏳:</strong> Pending CEO approval on SLA day-in-stage targets and deal owner assignments. Blocks: SLA formula activation, Slack automations, notification matrix</p>
+    <p><strong>Day 5 🔧:</strong> Dashboards built, GCal brand meeting detector deployed (HITL), event trigger automation architecture defined. Remaining: Gmail auto-capture, /bd-status command, bi-directional calendar sync, CEO weekly PDF</p>
+    <p style="margin-top:0.5rem;"><strong>Overall: 79% complete (22/28 tasks)</strong> — <a href="https://bdcc-implementation-tracker.vercel.app/implementation-tracker" style="color:var(--orange);">View live tracker →</a></p>
+</section>
 
 </div>
+
+<footer>
+    <p><strong>Opptra BD Command Center — BRD & PRD v1.2</strong></p>
+    <p>Unified Architecture + Event Triggers + HITL Automations</p>
+    <p>Confidential — Updated April 24, 2026</p>
+    <p style="margin-top: 1rem; font-size: 0.9rem;">Complete specification at <a href="https://bd-command-center-brd-prd.vercel.app" style="color: var(--orange);">https://bd-command-center-brd-prd.vercel.app</a></p>
+</footer>
+
 </body>
 </html>
